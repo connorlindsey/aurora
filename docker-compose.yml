@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  db:
+    image: "postgres" # Latest, official postgres
+    env_file:
+      - db.env
+    volumes:
+      - db-data:/var/lib/postgresql/data/ # Persist data
+
+volumes:
+  db-data: # Named volume
