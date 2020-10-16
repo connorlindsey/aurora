@@ -22,6 +22,9 @@ export default function Home() {
 			<Main>
 				<Headline>12month</Headline>
 				<Tagline>A tool for tracking life's most important <KeyWord>{keyword}</KeyWord>.</Tagline>
+				<ScreenShotContainer>
+					<img style={{maxHeight: '400px'}} src="/assets/mockups.png" alt="images of mockups"></img>
+				</ScreenShotContainer>
 				<SignupContainer>
 					<h2>Early Access</h2>	
 					<p style={{textAlign: 'justify'}}>Our app is currently in development and we could really use your help. Sign up below and we'll reach out to your with <u>updates</u>, <u>questions</u>, and <u>requests for feedback.</u></p>	
@@ -34,6 +37,16 @@ export default function Home() {
   )
 }
 
+const ScreenShotContainer = styled.div`
+	width: 50%;
+	border-radius: 3px;
+	text-align: center;
+	 
+	@media (max-width: 768px) {
+		width: 80%;
+	}
+	
+`
 const Submit = styled.button`
 	background-color: #5CD670;
 	padding: .5rem 1rem;
@@ -62,7 +75,7 @@ const Headline = styled.h1`
 `
 const Tagline = styled.h2`
 	text-align: center;
-	margin: .5rem 5rem;
+	margin: 2rem 5rem;
 `
 
 const KeyWord = styled.span`
@@ -74,7 +87,7 @@ const Layout = styled.div`
 	justify-content: center;
     align-items: center;	
 	background-color: #1E2128;
-	height: 100vh;
+	min-height: 100vh;
 	width: 100vw;
 	overflow-x:hidden;
 	color: white;
