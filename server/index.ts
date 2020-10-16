@@ -1,8 +1,8 @@
 import express from 'express'
 const app = express()
-const PORT = 8000
+const PORT = process.env.PORT || 8000
 
-app.get('/', (req, res) => res.send('Express + TypeScript Server'))
+app.get('/', (req, res) => res.send('Express + TypeScript Server running in Docker'))
 
 type Aim = {
   id: number
