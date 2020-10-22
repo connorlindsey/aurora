@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from "react"
-import { GetStaticProps } from "next"
-import Link from "next/link"
+import React, { FunctionComponent } from 'react'
+import { GetStaticProps } from 'next'
+import Link from 'next/link'
 import Head from 'next/head'
 
 type DashboardProps = {
@@ -19,12 +19,16 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
         <h1>Dashboard</h1>
         <p>List of aims:</p>
         <ul>
-          {aims.map(aim => <li key={aim.id}>{aim.name}</li>)}
+          {aims.map((aim) => (
+            <li key={aim.id}>{aim.name}</li>
+          ))}
         </ul>
       </main>
 
       <nav>
-        <Link href="/"><a>Home</a></Link>
+        <Link href="/">
+          <a>Home</a>
+        </Link>
       </nav>
     </div>
   )
@@ -33,10 +37,10 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
 export default Dashboard
 
 export const getServerSideProps: GetStaticProps = async (context) => {
-  console.info("Getting props")
+  console.log('Getting props')
   let aims = []
   try {
-    const res = await fetch('http://localhost:8000/aims')
+    const res = await fetch('http://api:8000/aims')
     const data = await res.json()
     aims = data
   } catch (e) {
@@ -46,6 +50,6 @@ export const getServerSideProps: GetStaticProps = async (context) => {
   }
 
   return {
-    props: { aims }
+    props: { aims },
   }
 }
