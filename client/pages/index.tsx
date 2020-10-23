@@ -31,6 +31,19 @@ export default function Home() {
     })
   }
 
+  // Remove error or success message after 3 seconds
+  useEffect(() => {
+    if (formStatus === 'LOADING' || formStatus === 'DEFAULT') {
+      return
+    }
+
+    const interval = setInterval(() => {
+      setFormStatus('DEFAULT')
+    }, 2500)
+
+    return () => clearInterval(interval)
+  }, [formStatus])
+
   const earlyAccessSignup = async (e: Event) => {
     e.preventDefault()
     setFormStatus('LOADING')
