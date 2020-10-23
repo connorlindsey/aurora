@@ -1,7 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-import { rateLimit } from 'express-rate-limit'
 import { pool } from './config'
 
 const PORT = process.env.PORT || 8000
@@ -14,12 +13,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   cors({
     origin: isProduction ? 'https://twelvemonth.vercel.app' : '*',
-  })
-)
-app.use(
-  rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minute
-    max: 25,
   })
 )
 

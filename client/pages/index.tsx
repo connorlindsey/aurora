@@ -156,11 +156,11 @@ const Form = styled.form`
     :disabled {
       opacity: 0.5;
     }
-  }
 
-  @media screen and (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
   }
 `
 
@@ -194,7 +194,8 @@ const Headline = styled.h1`
 `
 const Tagline = styled.h2`
   text-align: center;
-  margin: 2rem 5rem;
+  margin: 2rem;
+  max-width: 450px;
 `
 
 const KeyWord = styled.span`
