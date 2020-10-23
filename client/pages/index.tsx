@@ -36,7 +36,7 @@ export default function Home() {
     setFormStatus('LOADING')
 
     try {
-      await fetch(`${process.env.API_URL}/earlyaccess`, {
+      const res = await fetch(`${process.env.API_URL}/earlyaccess`, {
         method: 'post',
         headers: {
           Accept: 'application/json',
@@ -44,11 +44,17 @@ export default function Home() {
         },
         body: JSON.stringify(formValues),
       })
-      setFormValues({
-        email: '',
-        name: '',
-      })
-      setFormStatus('SUCCESS')
+      const data = await res.json()
+      if (data.status === 'Success') {
+        setFormValues({
+          email: '',
+          name: '',
+        })
+        setFormStatus('SUCCESS')
+      } else {
+        console.error(data.message)
+        setFormStatus('ERROR')
+      }
     } catch (e) {
       if (e instanceof Error) {
         console.error(e.message)
