@@ -36,7 +36,7 @@ export default function Home() {
     setFormStatus('LOADING')
 
     try {
-      const res = await fetch(`${process.env.API_URL}/earlyaccess`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/earlyaccess`, {
         method: 'post',
         headers: {
           Accept: 'application/json',
