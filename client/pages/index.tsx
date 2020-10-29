@@ -39,7 +39,7 @@ export default function Home() {
 
     const interval = setInterval(() => {
       setFormStatus('DEFAULT')
-    }, 2500)
+    }, 3000)
 
     return () => clearInterval(interval)
   }, [formStatus])
@@ -51,10 +51,6 @@ export default function Home() {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/earlyaccess`, {
         method: 'post',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(formValues),
       })
       const data = await res.json()

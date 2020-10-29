@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const Text = styled.p`
   text-align: ${(props) => props.textAlign};
@@ -34,7 +34,7 @@ const Body = styled(Text)`
   font-size: max(17px, min(20px, 2.4vw));
   font-size: clamp(17px, 2.4vw, 20px);
   font-weight: 500;
-  color: ${(props) => props.theme.grey["800"]};
+  color: ${(props) => props.theme.grey['800']};
 `
 
 const Caption = styled(Text)`
@@ -42,7 +42,7 @@ const Caption = styled(Text)`
   font-size: max(12px, min(14px, 3vw));
   font-size: clamp(12px, 3vw, 14px);
   font-weight: 500;
-  color: ${(props) => props.theme.grey["800"]};
+  color: ${(props) => props.theme.grey['800']};
 `
 
 export { Headline, Subheading, Title, Body, Caption }
