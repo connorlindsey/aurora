@@ -1,7 +1,8 @@
-import React, { FunctionComponent } from 'react'
 import { GetStaticProps } from 'next'
-import Link from 'next/link'
 import Head from 'next/head'
+import Link from 'next/link'
+import React, { FunctionComponent } from 'react'
+import AuthGuard from '../components/AuthGuard'
 
 type DashboardProps = {
   aims: any[]
@@ -9,7 +10,7 @@ type DashboardProps = {
 
 const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
   return (
-    <div>
+    <AuthGuard level="ADMIN">
       <Head>
         <title>dashboard | twelvemonth</title>
         <link rel="icon" href="/favicon.ico" />
@@ -30,7 +31,7 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
           <a>Home</a>
         </Link>
       </nav>
-    </div>
+    </AuthGuard>
   )
 }
 

@@ -12,11 +12,10 @@ enum STATUS {
   SUCCESS,
 }
 
-const Register: FunctionComponent = () => {
+const Login: FunctionComponent = () => {
   const router = useRouter()
   const [status, setStatus] = useState<STATUS>(STATUS.DEFAULT)
   const [formValues, setFormValues] = useState({
-    name: '',
     email: '',
     password: '',
   })
@@ -35,7 +34,7 @@ const Register: FunctionComponent = () => {
     setStatus(STATUS.LOADING)
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -63,18 +62,9 @@ const Register: FunctionComponent = () => {
   return (
     <Layout>
       <Card>
-        <h1>Sign Up</h1>
+        <h1>Login</h1>
         <Form onSubmit={handleSubmit} padding=".5rem 0 0" maxWidth="420px">
           <fieldset disabled={status === STATUS.LOADING}>
-            <Label>
-              Name
-              <Input
-                name="name"
-                aria-label="Name"
-                placeholder="Name"
-                onChange={(e) => handleInput(e)}
-              />
-            </Label>
             <Label>
               Email
               <Input
@@ -97,7 +87,7 @@ const Register: FunctionComponent = () => {
                 required
               />
             </Label>
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit">Login</Button>
           </fieldset>
         </Form>
       </Card>
@@ -105,7 +95,7 @@ const Register: FunctionComponent = () => {
   )
 }
 
-export default Register
+export default Login
 
 const Card = styled.div`
   background-color: ${(props) => props.theme.grey['800']};

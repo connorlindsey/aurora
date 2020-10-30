@@ -1,13 +1,29 @@
-import React, { FunctionComponent } from 'react'
-import Link from 'next/link'
 import Head from 'next/head'
+import Link from 'next/link'
+import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 
 type LayoutProps = {
   title?: string
 }
 
+type Path = {
+  url: string
+  name: string
+}
+
+const pathMap = {
+  '/register': [{ url: '/login', name: 'Login' }],
+  '/login': [{ url: '/register', name: 'Sign Up' }],
+}
+
 const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
+  let paths = []
+  if (typeof window !== 'undefined') {
+    const currentPage = window.location.pathname
+    paths = pathMap[currentPage] || []
+  }
+
   return (
     <Container>
       <Head>
@@ -19,6 +35,13 @@ const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
           <Link href="/">
             <a>twelvemonth</a>
           </Link>
+          <nav>
+            {paths.map((path) => (
+              <Link href={path.url} key={path.url}>
+                <a>{path.name}</a>
+              </Link>
+            ))}
+          </nav>
         </header>
         <main>{children}</main>
       </Content>
@@ -41,6 +64,9 @@ const Content = styled.div`
 
   header {
     padding: 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     a {
       font-size: 1.2rem;

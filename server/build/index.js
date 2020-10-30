@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
+const express_1 = __importDefault(require("express"));
 const config_1 = require("./config");
 const PORT = process.env.PORT || 8000;
 const isProduction = process.env.NODE_ENV === 'production';
@@ -17,7 +17,7 @@ app.use(cors_1.default({
 }));
 app.get('/', (req, res) => res.send('twelvemonth API'));
 // Early Access
-const getEarlyAcces = (req, res) => {
+const getEarlyAccess = (req, res) => {
     console.info('Get early access');
     config_1.pool.query('SELECT * FROM earlyaccess', (error, results) => {
         if (error) {
@@ -40,7 +40,7 @@ const addEarlyAccess = (req, res) => {
         res.status(200).json({ status: 'Success', message: 'Subscriber added' });
     });
 };
-app.route('/earlyaccess').get(getEarlyAcces).post(addEarlyAccess);
+app.route('/earlyaccess').get(getEarlyAccess).post(addEarlyAccess);
 const aims = [
     { id: 1, name: 'Stretch' },
     { id: 2, name: 'Read' },

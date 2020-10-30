@@ -1,7 +1,8 @@
-import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
+import express from 'express'
 import { pool } from './config'
+import { login, register, validateSession } from './src/controllers/accountcontroller'
 
 const PORT = process.env.PORT || 8000
 const isProduction = process.env.NODE_ENV === 'production'
@@ -19,7 +20,7 @@ app.use(
 app.get('/', (req, res) => res.send('twelvemonth API'))
 
 // Early Access
-const getEarlyAcces = (req, res) => {
+const getEarlyAccess = (req, res) => {
   console.info('Get early access')
   pool.query('SELECT * FROM earlyaccess', (error, results) => {
     if (error) {
@@ -44,7 +45,10 @@ const addEarlyAccess = (req, res) => {
   })
 }
 
-app.route('/earlyaccess').get(getEarlyAcces).post(addEarlyAccess)
+app.route('/earlyaccess').get(getEarlyAccess).post(addEarlyAccess)
+app.route('/register').post(register)
+app.route('/login').post(login)
+app.route('/session').post(validateSession)
 
 // Aims
 type Aim = {

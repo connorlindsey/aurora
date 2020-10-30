@@ -4,10 +4,18 @@ CREATE TABLE IF NOT EXISTS earlyaccess (
   name TEXT
 );
 
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS account (
   ID SERIAL PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,
   name TEXT,
   password TEXT,
   created_at TIMESTAMP,
-)
+  role TEXT
+);
+
+CREATE TABLE IF NOT EXISTS session (
+  ID SERIAL PRIMARY KEY,
+  email TEXT NOT NULL,
+  token TEXT NOT NULL,
+  expires_at TIMESTAMP NOT NULL
+);

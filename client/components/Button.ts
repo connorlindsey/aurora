@@ -13,6 +13,7 @@ const Button = styled.button`
   border: none;
   cursor: pointer;
   width: ${(props) => props.theme.width};
+  border: 2px solid transparent;
 
   transition: all 0.2s ease;
 
@@ -33,7 +34,7 @@ const Button = styled.button`
 
   &:focus {
     border: 2px solid
-      ${(props) => (props.secondary ? props.theme.grey['400'] : props.theme.primary['400'])};
+      ${(props) => (props.secondary ? props.theme.primary['400'] : props.theme.grey['400'])};
     outline: none;
   }
 `

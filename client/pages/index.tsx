@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-
 import { Button } from '../components/Button'
+import { Input, Label } from '../components/Form'
 
 const nouns = ['aims', 'tasks', 'initiatives', 'goals', 'habits', 'time', 'challenges', 'targets']
 
@@ -51,6 +51,9 @@ export default function Home() {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/earlyaccess`, {
         method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(formValues),
       })
       const data = await res.json()
@@ -173,30 +176,30 @@ const Form = styled.form`
   }
 `
 
-const Label = styled.label`
-  width: 100%;
-  margin: 0 auto 1rem;
-  text-align: left;
-  font-size: 1rem;
-`
+// const Label = styled.label`
+//   width: 100%;
+//   margin: 0 auto 1rem;
+//   text-align: left;
+//   font-size: 1rem;
+// `
 
-const Input = styled.input`
-  font-size: 1rem;
-  width: ${(props) => props.width || '100%'};
-  border: 1px solid ${(props) => props.theme.grey['700']};
-  background-color: ${(props) => props.theme.grey['800']};
-  border-radius: ${(props) => props.theme.borderRadius};
-  height: 36px;
-  outline: none;
-  margin: 0.25rem 0;
-  padding-left: 8px;
-  color: #fff;
+// const Input = styled.input`
+//   font-size: 1rem;
+//   width: ${(props) => props.width || '100%'};
+//   border: 1px solid ${(props) => props.theme.grey['700']};
+//   background-color: ${(props) => props.theme.grey['800']};
+//   border-radius: ${(props) => props.theme.borderRadius};
+//   height: 36px;
+//   outline: none;
+//   margin: 0.25rem 0;
+//   padding-left: 8px;
+//   color: #fff;
 
-  &::placeholder {
-    font-size: 1rem;
-    color: ${(props) => props.theme.grey['400']};
-  }
-`
+//   &::placeholder {
+//     font-size: 1rem;
+//     color: ${(props) => props.theme.grey['400']};
+//   }
+// `
 const Headline = styled.h1`
   font-size: 2rem;
   color: white;
