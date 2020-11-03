@@ -1,8 +1,8 @@
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
 import React, { FunctionComponent } from 'react'
 import AuthGuard from '../components/AuthGuard'
+import Layout from '../components/Layout'
 
 type DashboardProps = {
   aims: any[]
@@ -10,28 +10,24 @@ type DashboardProps = {
 
 const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
   return (
-    <AuthGuard level="ADMIN">
-      <Head>
-        <title>dashboard | twelvemonth</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <Layout>
+      <AuthGuard>
+        <Head>
+          <title>dashboard | twelvemonth</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-      <main>
-        <h1>Dashboard</h1>
-        <p>List of aims:</p>
-        <ul>
-          {aims.map((aim) => (
-            <li key={aim.id}>{aim.name}</li>
-          ))}
-        </ul>
-      </main>
-
-      <nav>
-        <Link href="/">
-          <a>Home</a>
-        </Link>
-      </nav>
-    </AuthGuard>
+        <main>
+          <h1>Dashboard</h1>
+          <p>List of aims:</p>
+          <ul>
+            {aims.map((aim) => (
+              <li key={aim.id}>{aim.name}</li>
+            ))}
+          </ul>
+        </main>
+      </AuthGuard>
+    </Layout>
   )
 }
 

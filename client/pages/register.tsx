@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Button } from '../components/Button'
 import { Form, Input, Label } from '../components/Form'
 import Layout from '../components/Layout'
+import useAuth from '../services/useAuth'
 
 enum STATUS {
   DEFAULT,
@@ -13,6 +14,7 @@ enum STATUS {
 }
 
 const Register: FunctionComponent = () => {
+  const { signup } = useAuth()
   const router = useRouter()
   const [status, setStatus] = useState<STATUS>(STATUS.DEFAULT)
   const [formValues, setFormValues] = useState({
@@ -32,24 +34,15 @@ const Register: FunctionComponent = () => {
     if (!formValues.email || !formValues.password) {
       return
     }
-    setStatus(STATUS.LOADING)
 
+    setStatus(STATUS.LOADING)
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formValues),
-      })
-      const data = await res.json()
-      if (data.status === 'Success') {
+      const res = await signup(formValues)
+      if (res === 'Success') {
         setStatus(STATUS.SUCCESS)
-        localStorage.setItem('TOKEN', data.token)
-        localStorage.setItem('ACCOUNT', formValues.email)
         router.push('/dashboard')
       } else {
-        throw new Error(data.message)
+        throw new Error(res)
       }
     } catch (e) {
       if (e instanceof Error) {
@@ -97,7 +90,9 @@ const Register: FunctionComponent = () => {
                 required
               />
             </Label>
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit" loading={status === STATUS.LOADING}>
+              Sign Up
+            </Button>
           </fieldset>
         </Form>
       </Card>

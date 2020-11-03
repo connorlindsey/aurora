@@ -46,7 +46,6 @@ export default function Home() {
 
   const earlyAccessSignup = async (e: Event) => {
     e.preventDefault()
-    setFormStatus('LOADING')
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/earlyaccess`, {
@@ -120,7 +119,7 @@ export default function Home() {
                   onChange={(e) => handleInput(e)}
                 />
               </Label>
-              <Button type="submit" width="100%">
+              <Button type="submit" width="100%" loading={formStatus === 'LOADING'}>
                 Submit
               </Button>
             </fieldset>

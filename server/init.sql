@@ -1,3 +1,5 @@
+-- TODO: Figue out how to run these on deploy in heroku
+
 CREATE TABLE IF NOT EXISTS earlyaccess (
   ID SERIAL PRIMARY KEY,
   email TEXT NOT NULL,

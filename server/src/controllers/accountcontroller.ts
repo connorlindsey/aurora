@@ -52,6 +52,7 @@ export const login = async (req: Request, res: Response) => {
     // 2. Validate password
     const isValidPassword = await bcrypt.compare(password, rows[0].password)
     if (!isValidPassword) {
+      console.log('Incorrect password')
       return res.status(400).json({ status: 'Error', message: 'Incorrect password' })
     }
 
@@ -69,34 +70,38 @@ export const login = async (req: Request, res: Response) => {
   }
 }
 
-export const validateSession = async (req: Request, res: Response) => {
-  const { token, email, level } = req.body
-  console.log(req.body)
+export const logout = async (req: Request, res: Response) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM session WHERE token = $1 AND email = $2', [
-      token,
-      email,
-    ])
-    console.log('rows', rows)
-    if (rows.length === 1 && !level) {
-      console.log('Found session. No level')
-      return res.status(200).send()
+    await pool.query('DELETE FROM session WHERE token = $1', [req.body.token])
+    return res.status(200).send()
+  } catch (e) {
+    return res.status(500).send()
+  }
+}
+
+export const validateSession = async (req: Request, res: Response) => {
+  const { token, email } = req.body
+  try {
+    const { rows } = await pool.query(
+      `
+        SELECT s.expires_at, a.role FROM session AS s 
+        LEFT JOIN account AS a ON s.email = a.email
+        WHERE s.token = $1 AND s.email = $2
+      `,
+      [token, email]
+    )
+
+    if (rows.length === 1 && rows[0].expires_at > Date.now()) {
+      return res
+        .status(200)
+        .json({ status: 'Success', user: { role: rows[0].role, authenticated: true } })
     }
 
-    if (level) {
-      const { rows } = await pool.query('SELECT role FROM account WHERE email = $1', [email])
-      console.log('rows 2', rows)
-      if (rows.length === 1 && rows[0].role === level) {
-        console.log('Found role')
-        return res.status(200).send()
-      }
-    }
-
-    return res.status(400).send()
+    return res.status(400).json({ status: 'Error', message: 'Invalid session' })
   } catch (e) {
     if (e instanceof Error) {
       console.error(e.message)
-      return res.status(500).send()
+      return res.status(500).json({ status: 'Error', message: e.message })
     }
   }
 }

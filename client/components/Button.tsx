@@ -1,6 +1,18 @@
 import styled from 'styled-components'
 
-const Button = styled.button`
+interface ButtonProps {
+  loading?: boolean
+  margin?: string
+  secondary?: boolean
+  width?: any
+  type?: string
+}
+
+const Button: React.FunctionComponent<ButtonProps> = (props) => {
+  return <ButtonWrapper {...props}>{props.loading ? 'Loading' : props.children}</ButtonWrapper>
+}
+
+const ButtonWrapper = styled.button`
   height: 36px;
   padding: 0 12px;
   font-size: 1rem;

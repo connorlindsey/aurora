@@ -2,7 +2,8 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import express from 'express'
 import { pool } from './config'
-import { login, register, validateSession } from './src/controllers/accountcontroller'
+import { login, logout, register, validateSession } from './src/controllers/accountcontroller'
+import { getAccounts, getEarlyAccess } from './src/controllers/admincontroller'
 
 const PORT = process.env.PORT || 8000
 const isProduction = process.env.NODE_ENV === 'production'
@@ -20,17 +21,6 @@ app.use(
 app.get('/', (req, res) => res.send('twelvemonth API'))
 
 // Early Access
-const getEarlyAccess = (req, res) => {
-  console.info('Get early access')
-  pool.query('SELECT * FROM earlyaccess', (error, results) => {
-    if (error) {
-      console.error(error.message)
-      res.status(500).json({ status: 'Error', message: error.message })
-    }
-    res.status(200).json(results.rows)
-  })
-}
-
 const addEarlyAccess = (req, res) => {
   console.info('Add early access')
   const { email, name } = req.body
@@ -45,10 +35,18 @@ const addEarlyAccess = (req, res) => {
   })
 }
 
+// Early Access
 app.route('/earlyaccess').get(getEarlyAccess).post(addEarlyAccess)
+
+// Authentication
 app.route('/register').post(register)
 app.route('/login').post(login)
-app.route('/session').post(validateSession)
+app.route('/authenticate').post(validateSession)
+app.route('/logout').post(logout)
+
+// Admin
+app.route('/admin/accounts').get(getAccounts)
+app.route('/admin/earlyAccess').get(getEarlyAccess)
 
 // Aims
 type Aim = {

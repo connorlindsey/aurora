@@ -1,7 +1,8 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import useAuth from '../services/useAuth'
 
 type LayoutProps = {
   title?: string
@@ -10,19 +11,36 @@ type LayoutProps = {
 type Path = {
   url: string
   name: string
+  role?: string
 }
 
 const pathMap = {
   '/register': [{ url: '/login', name: 'Login' }],
   '/login': [{ url: '/register', name: 'Sign Up' }],
+  loggedIn: [{ url: '/dashboard', name: 'Dashboard' }],
+  admin: [{ url: '/admin', name: 'Admin' }],
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
-  let paths = []
-  if (typeof window !== 'undefined') {
+  const { user, logout } = useAuth()
+  const [paths, setPaths] = useState([])
+
+  useEffect(() => {
     const currentPage = window.location.pathname
-    paths = pathMap[currentPage] || []
-  }
+    setPaths(pathMap[currentPage] || [])
+
+    if (user?.role === 'ADMIN') {
+      if (pathMap.admin.some((p) => !paths.includes(p))) {
+        setPaths((prevPaths) => [...prevPaths, ...pathMap.admin])
+      }
+    }
+
+    if (user?.authenticated) {
+      if (pathMap.loggedIn.some((p) => !paths.includes(p))) {
+        setPaths((prevPaths) => [...prevPaths, ...pathMap.loggedIn])
+      }
+    }
+  }, [user])
 
   return (
     <Container>
@@ -41,6 +59,11 @@ const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
                 <a>{path.name}</a>
               </Link>
             ))}
+            {user?.authenticated && (
+              <button onClick={logout} className="logout">
+                Logout
+              </button>
+            )}
           </nav>
         </header>
         <main>{children}</main>
@@ -68,8 +91,24 @@ const Content = styled.div`
     align-items: center;
     justify-content: space-between;
 
+    nav {
+      *:not(:last-child) {
+        margin-right: 1rem;
+      }
+    }
+
+    .logout {
+      color: #fff;
+      background: none;
+      border: none;
+    }
+
+    .logout,
     a {
       font-size: 1.2rem;
+      &:hover {
+        color: ${(props) => props.theme.grey['400']};
+      }
     }
   }
 `
