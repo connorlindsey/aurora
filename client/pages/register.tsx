@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import React, { FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
 import { Button } from '../components/Button'
-import { Form, Input, Label } from '../components/Form'
+import { Form, Input } from '../components/Form'
 import Layout from '../components/Layout'
 import useAuth from '../services/useAuth'
 
@@ -17,15 +17,17 @@ const Register: FunctionComponent = () => {
   const { signup } = useAuth()
   const router = useRouter()
   const [status, setStatus] = useState<STATUS>(STATUS.DEFAULT)
+  const [error, setError] = useState({ key: '', message: '' })
   const [formValues, setFormValues] = useState({
     name: '',
     email: '',
     password: '',
   })
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
+    setError({ key: '', message: '' })
     setFormValues({
       ...formValues,
-      [e.target.name]: e.target.value,
+      [e.currentTarget.name]: e.currentTarget.value,
     })
   }
 
@@ -47,7 +49,7 @@ const Register: FunctionComponent = () => {
     } catch (e) {
       if (e instanceof Error) {
         console.error(e.message)
-        // TODO: Display error
+        setError({ key: 'FORM', message: e.message })
       }
       setStatus(STATUS.ERROR)
     }
@@ -57,39 +59,39 @@ const Register: FunctionComponent = () => {
     <Layout>
       <Card>
         <h1>Sign Up</h1>
-        <Form onSubmit={handleSubmit} padding=".5rem 0 0" maxWidth="420px">
+        <Form
+          onSubmit={handleSubmit}
+          padding=".5rem 0 0"
+          maxWidth="420px"
+          errorKey="FORM"
+          error={error}
+        >
           <fieldset disabled={status === STATUS.LOADING}>
-            <Label>
-              Name
-              <Input
-                name="name"
-                aria-label="Name"
-                placeholder="Name"
-                onChange={(e) => handleInput(e)}
-              />
-            </Label>
-            <Label>
-              Email
-              <Input
-                name="email"
-                aria-label="Email"
-                type="email"
-                placeholder="Email"
-                onChange={(e) => handleInput(e)}
-                required
-              />
-            </Label>
-            <Label>
-              Password
-              <Input
-                name="password"
-                aria-label="Password"
-                type="password"
-                placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
-                onChange={(e) => handleInput(e)}
-                required
-              />
-            </Label>
+            <Input
+              name="name"
+              label="Name"
+              aria-label="Name"
+              placeholder="Name"
+              onChange={(e) => handleInput(e)}
+            />
+            <Input
+              name="email"
+              aria-label="Email"
+              label="Email"
+              type="email"
+              placeholder="Email"
+              onChange={(e) => handleInput(e)}
+              required
+            />
+            <Input
+              name="password"
+              aria-label="Password"
+              label="Password"
+              type="password"
+              placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+              onChange={(e) => handleInput(e)}
+              required
+            />
             <Button type="submit" loading={status === STATUS.LOADING}>
               Sign Up
             </Button>

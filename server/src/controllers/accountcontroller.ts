@@ -73,9 +73,9 @@ export const login = async (req: Request, res: Response) => {
 export const logout = async (req: Request, res: Response) => {
   try {
     await pool.query('DELETE FROM session WHERE token = $1', [req.body.token])
-    return res.status(200).send()
+    return res.status(200).end()
   } catch (e) {
-    return res.status(500).send()
+    return res.status(500).end()
   }
 }
 
@@ -108,12 +108,39 @@ export const validateSession = async (req: Request, res: Response) => {
 
 const storeToken = async (email: string, token: string) => {
   try {
-    const expires_at = Date.now() - 24 * 60 * 60 * 1000
+    const expires_at = Date.now() + 24 * 60 * 60 * 1000
     await pool.query(
       'INSERT INTO session (email, token, expires_at) VALUES ($1, $2, to_timestamp($3))',
       [email, token, expires_at]
     )
   } catch (e) {
     throw e
+  }
+}
+
+export const updatePassword = async (req: Request, res: Response) => {
+  const { email, password, currPassword } = req.body
+  try {
+    // 1. Get user
+    const { rows } = await pool.query('SELECT * FROM account WHERE email = $1', [email])
+    if (rows.length < 1) {
+      return res.status(400).json({ status: 'Error', message: 'User not found' })
+    }
+    // 2. Validate password
+    const isValidPassword = await bcrypt.compare(currPassword, rows[0].password)
+    if (!isValidPassword) {
+      return res.status(400).json({ status: 'Error', message: 'Incorrect password' })
+    }
+
+    // 3. Store new password
+    let hashedPassword = await bcrypt.hash(password, 10)
+    await pool.query('UPDATE account SET password = $1 WHERE email = $2', [email, hashedPassword])
+
+    return res.status(200).json({ status: 'Success' })
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      return res.status(500).json({ status: 'Error', message: e.message })
+    }
   }
 }

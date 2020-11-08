@@ -12,7 +12,7 @@ type AdminProps = {
 const Admin: FunctionComponent<AdminProps> = ({ accounts, earlyAccess }) => {
   return (
     <Layout>
-      <AuthGuard>
+      <AuthGuard requiredRole="ADMIN">
         <Head>
           <title>dashboard | twelvemonth</title>
           <link rel="icon" href="/favicon.ico" />

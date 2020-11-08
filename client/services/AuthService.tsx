@@ -11,7 +11,7 @@ interface User {
 
 const AuthService = ({ children }) => {
   const [user, setUser] = useState<User>(null)
-  const [authStatus, setStatus] = useState<STATUS>(STATUS.DEFAULT)
+  const [authStatus, setStatus] = useState<STATUS>(STATUS.LOADING)
 
   // Load initial auth data
   useEffect(() => {
@@ -20,7 +20,6 @@ const AuthService = ({ children }) => {
 
   // authenticate validates a token/email set and returns permissions
   const authenticate = async () => {
-    console.log('Authenticating')
     setStatus(STATUS.LOADING)
     // 1. Get ACCOUNT and TOKEN
     const token = localStorage.getItem('TOKEN')
@@ -38,16 +37,13 @@ const AuthService = ({ children }) => {
       const data = await res.json()
 
       if (data.status === 'Success') {
-        console.log('data', data)
         setUser(data.user)
-        console.log('Done authenticating')
-        console.log('user in service', user)
         setStatus(STATUS.DEFAULT)
       } else {
         throw new Error(data.message)
       }
     } catch (e) {
-      console.error(e)
+      console.log(e)
       setStatus(STATUS.ERROR)
     }
   }
@@ -77,7 +73,6 @@ const AuthService = ({ children }) => {
   }
 
   const login = async (req: { email: string; password: string }) => {
-    console.log('Login')
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
         method: 'post',
@@ -103,7 +98,7 @@ const AuthService = ({ children }) => {
   const logout = async () => {
     try {
       const token = localStorage.getItem('TOKEN')
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/logout`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -124,6 +119,28 @@ const AuthService = ({ children }) => {
     }
   }
 
+  const updatePassword = async ({ password, currPassword }) => {
+    try {
+      const email = localStorage.getItem('ACCOUNT')
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/updatePassword`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password, currPassword, email }),
+      })
+      const data = await res.json()
+
+      if (data.status === 'Success') {
+        return data.status
+      } else {
+        throw new Error(data.message)
+      }
+    } catch (e) {
+      return e.message
+    }
+  }
+
   return (
     <Provider
       value={{
@@ -131,6 +148,7 @@ const AuthService = ({ children }) => {
         signup,
         login,
         logout,
+        updatePassword,
         //Data
         user,
         authStatus,

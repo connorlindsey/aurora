@@ -1,6 +1,7 @@
+import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 
-const Form = styled.form`
+const FormWrapper = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -21,14 +22,46 @@ const Form = styled.form`
   }
 `
 
-const Label = styled.label`
-  width: 100%;
-  margin: 0 auto 1rem;
-  text-align: left;
-  font-size: 1rem;
+const FormError = styled.div`
+  font-size: 1.2rem;
+  text-align: center;
+  margin: 1rem 0 0;
+  color: ${(props) => props.theme.error['500']};
 `
 
-const Input = styled.input`
+interface FormProps {
+  onSubmit: Function
+  errorKey?: string
+  error?: {
+    key: string
+    message: string
+  }
+  padding?: string
+  maxWidth?: string
+}
+
+const Form: FunctionComponent<FormProps> = (props) => {
+  return (
+    <FormWrapper {...props}>
+      {props.children}
+      {props.errorKey === props.error?.key && <FormError>{props.error?.message} 🙁</FormError>}
+    </FormWrapper>
+  )
+}
+
+const Label = styled.label`
+  width: 100%;
+  font-size: 1rem;
+  display: flex;
+  line-height: 1.5rem;
+
+  .error {
+    margin-left: 1rem;
+    color: ${(props) => props.theme.error['500']};
+  }
+`
+
+const InputWrapper = styled.input`
   font-size: 1rem;
   width: ${(props) => props.width || '100%'};
   border-radius: ${(props) => props.theme.borderRadius};
@@ -49,6 +82,33 @@ const Input = styled.input`
     color: ${(props) => props.theme.grey['300']};
   }
 `
+
+const Field = styled.div`
+  margin: 0 0 1rem;
+`
+
+interface InputProps {
+  errorKey?: string
+  error?: {
+    key: string
+    message: string
+  }
+  label: string
+}
+
+const Input: FunctionComponent<InputProps & React.HTMLProps<HTMLInputElement>> = (props) => {
+  return (
+    <Field>
+      <Label>
+        <div>{props.label}</div>
+        {props.error && props.errorKey === props.error.key && (
+          <div className="error">{props.error?.message} 🙁</div>
+        )}
+      </Label>
+      <InputWrapper {...props}>{props.children}</InputWrapper>
+    </Field>
+  )
+}
 
 const Textarea = styled.textarea`
   font-size: 1rem;
