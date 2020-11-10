@@ -1,38 +1,40 @@
 import { useRouter } from 'next/router'
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { FunctionComponent } from 'react'
 import useAuth from '../services/useAuth'
 import { STATUS } from '../types/common'
 
 interface AuthGuardProps {
-  level?: string
+  requiredRole?: string
 }
 
-const AuthGuard: FunctionComponent<AuthGuardProps> = ({ level, children }) => {
-  const { user, status: authStatus } = useAuth()
+const AuthGuard: FunctionComponent<AuthGuardProps> = ({ requiredRole, children }) => {
+  const { user, authStatus } = useAuth()
   const router = useRouter()
 
-  const [status, setStatus] = useState<STATUS>(STATUS.DEFAULT)
-  // TODO: Handle level
-  // TODO: Fix this redirecting before authentication is done being validated
-  useEffect(() => {
-    if (!user?.authenticated && authStatus !== STATUS.LOADING) {
-      console.log('Redirecting from auth Guard')
-      console.log('user', user)
-      // router.replace('/login')
-    } else {
-      console.log('Logged in')
-    }
-  }, [user, authStatus])
-
-  if (status === STATUS.LOADING) {
-    return <div></div>
+  if (authStatus === STATUS.LOADING) {
+    return <div>Loading...</div>
+  }
+  if (!user || user.authenticated === false) {
+    typeof window !== 'undefined' && router.replace('/login')
   }
 
-  if (status === STATUS.ERROR) {
-    return <div>Error</div>
+  if (requiredRole && user?.role !== requiredRole) {
+    console.log('Auth guard insufficient permissions')
+    return (
+      <div>
+        <h2>You don't have access to this page.</h2>
+        <span onClick={() => router.back()} style={{ cursor: 'pointer' }}>
+          Click here to go back
+        </span>
+      </div>
+    )
   }
 
-  return <>{children}</>
+  if (user?.authenticated) {
+    return <>{children}</>
+  }
+
+  return <div>Error</div>
 }
 
 export default AuthGuard

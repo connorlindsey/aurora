@@ -2,7 +2,13 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import express from 'express'
 import { pool } from './config'
-import { login, logout, register, validateSession } from './src/controllers/accountcontroller'
+import {
+  login,
+  logout,
+  register,
+  updatePassword,
+  validateSession,
+} from './src/controllers/accountcontroller'
 import { getAccounts, getEarlyAccess } from './src/controllers/admincontroller'
 
 const PORT = process.env.PORT || 8000
@@ -43,6 +49,7 @@ app.route('/register').post(register)
 app.route('/login').post(login)
 app.route('/authenticate').post(validateSession)
 app.route('/logout').post(logout)
+app.route('/updatePassword').post(updatePassword)
 
 // Admin
 app.route('/admin/accounts').get(getAccounts)

@@ -1,6 +1,7 @@
 export default {
   maxWidth: '1000px',
   borderRadius: '6px',
+  transition: '.2s all ease-out',
   primary: {
     100: `#F3FEF5`,
     200: `#CFF4D8`,

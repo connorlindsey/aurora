@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Button } from '../components/Button'
-import { Input, Label } from '../components/Form'
+import { Input } from '../components/Form'
 
 const nouns = ['aims', 'tasks', 'initiatives', 'goals', 'habits', 'time', 'challenges', 'targets']
 
@@ -24,10 +24,10 @@ export default function Home() {
     name: '',
   })
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
     setFormValues({
       ...formValues,
-      [e.target.name]: e.target.value,
+      [e.currentTarget.name]: e.currentTarget.value,
     })
   }
 
@@ -99,26 +99,22 @@ export default function Home() {
           </p>
           <Form onSubmit={earlyAccessSignup}>
             <fieldset disabled={formStatus === 'LOADING'}>
-              <Label>
-                Name
-                <Input
-                  name="name"
-                  placeholder="Name"
-                  aria-label="Name"
-                  onChange={(e) => handleInput(e)}
-                ></Input>
-              </Label>
-              <Label>
-                Email
-                <Input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  aria-label="Email"
-                  required
-                  onChange={(e) => handleInput(e)}
-                />
-              </Label>
+              <Input
+                name="name"
+                label="Name"
+                placeholder="Name"
+                aria-label="Name"
+                onChange={(e) => handleInput(e)}
+              ></Input>
+              <Input
+                type="email"
+                name="email"
+                label="Email"
+                placeholder="Email"
+                aria-label="Email"
+                required
+                onChange={(e) => handleInput(e)}
+              />
               <Button type="submit" width="100%" loading={formStatus === 'LOADING'}>
                 Submit
               </Button>
@@ -175,34 +171,11 @@ const Form = styled.form`
   }
 `
 
-// const Label = styled.label`
-//   width: 100%;
-//   margin: 0 auto 1rem;
-//   text-align: left;
-//   font-size: 1rem;
-// `
-
-// const Input = styled.input`
-//   font-size: 1rem;
-//   width: ${(props) => props.width || '100%'};
-//   border: 1px solid ${(props) => props.theme.grey['700']};
-//   background-color: ${(props) => props.theme.grey['800']};
-//   border-radius: ${(props) => props.theme.borderRadius};
-//   height: 36px;
-//   outline: none;
-//   margin: 0.25rem 0;
-//   padding-left: 8px;
-//   color: #fff;
-
-//   &::placeholder {
-//     font-size: 1rem;
-//     color: ${(props) => props.theme.grey['400']};
-//   }
-// `
 const Headline = styled.h1`
   font-size: 2rem;
   color: white;
 `
+
 const Tagline = styled.h2`
   text-align: center;
   margin: 2rem;
@@ -210,14 +183,14 @@ const Tagline = styled.h2`
 `
 
 const KeyWord = styled.span`
-  color: #5cd670;
+  color: ${(props) => props.theme.primary['500']};
   text-decoration: underline;
 `
 const Layout = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #1e2128;
+  background-color: ${(props) => props.theme.grey['900']};
   min-height: 100vh;
   width: 100vw;
   overflow-x: hidden;

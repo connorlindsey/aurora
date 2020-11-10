@@ -1,8 +1,11 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React, { FunctionComponent, useEffect, useState } from 'react'
+import { FiUser } from 'react-icons/fi'
 import styled from 'styled-components'
 import useAuth from '../services/useAuth'
+import Menu from './Menu'
 
 type LayoutProps = {
   title?: string
@@ -22,6 +25,7 @@ const pathMap = {
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
+  const router = useRouter()
   const { user, logout } = useAuth()
   const [paths, setPaths] = useState([])
 
@@ -56,13 +60,24 @@ const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
           <nav>
             {paths.map((path) => (
               <Link href={path.url} key={path.url}>
-                <a>{path.name}</a>
+                <a className={`nav-link ${router.pathname === path.url ? 'active' : null}`}>
+                  {path.name}
+                </a>
               </Link>
             ))}
             {user?.authenticated && (
-              <button onClick={logout} className="logout">
-                Logout
-              </button>
+              <Menu trigger={<MenuButton />}>
+                <Link href="/account">
+                  <a className={`${router.pathname === '/account' ? 'active' : null}`}>Account</a>
+                </Link>
+                <button
+                  onClick={logout}
+                  className="logout"
+                  style={{ cursor: 'pointer', padding: 0 }}
+                >
+                  Logout
+                </button>
+              </Menu>
             )}
           </nav>
         </header>
@@ -92,9 +107,16 @@ const Content = styled.div`
     justify-content: space-between;
 
     nav {
-      *:not(:last-child) {
+      display: flex;
+      align-items: center;
+
+      a.nav-link:not(:last-child) {
         margin-right: 1rem;
       }
+
+      /* a.active {
+        color: ${(props) => props.theme.grey['100']};
+      } */
     }
 
     .logout {
@@ -110,5 +132,22 @@ const Content = styled.div`
         color: ${(props) => props.theme.grey['400']};
       }
     }
+  }
+`
+
+const MenuButton = styled(FiUser)`
+  display: block;
+  height: 44px;
+  width: 44px;
+  cursor: pointer;
+  background-color: ${(props) => props.theme.grey['800']};
+  color: ${(props) => props.theme.grey['300']};
+  stroke-width: 2px;
+  padding: 8px;
+  border-radius: 50%;
+  transition: ${(props) => props.theme.transition};
+
+  &:hover {
+    background-color: ${(props) => props.theme.grey['700']};
   }
 `

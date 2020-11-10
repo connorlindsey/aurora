@@ -17,7 +17,7 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
     <Layout>
       <AuthGuard>
         <Head>
-          <title>dashboard | twelvemonth</title>
+          <title>Dashboard | twelvemonth</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
 

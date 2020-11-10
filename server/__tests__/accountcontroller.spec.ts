@@ -2,9 +2,9 @@ import { Request, Response } from 'express'
 import { register } from '../src/controllers/accountcontroller'
 
 describe('Sign up', () => {
-  it('should register a new user', () => {
-    let req = {} as Request
+  it('should register a new user', async () => {
+    let req = { body: { email: 'test@unit.com', password: 'test123' } } as Request
     let res = {} as Response
-    register(req, res)
+    await register(req, res)
   })
 })

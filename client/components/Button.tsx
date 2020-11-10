@@ -9,7 +9,8 @@ interface ButtonProps {
 }
 
 const Button: React.FunctionComponent<ButtonProps> = (props) => {
-  return <ButtonWrapper {...props}>{props.loading ? 'Loading' : props.children}</ButtonWrapper>
+  const { loading, ...otherProps } = props
+  return <ButtonWrapper {...otherProps}>{loading ? 'Loading' : props.children}</ButtonWrapper>
 }
 
 const ButtonWrapper = styled.button`
