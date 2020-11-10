@@ -18,7 +18,7 @@ const AuthGuard: FunctionComponent<AuthGuardProps> = ({ level, children }) => {
     if (!user?.authenticated && authStatus !== STATUS.LOADING) {
       console.log('Redirecting from auth Guard')
       console.log('user', user)
-      router.replace('/login')
+      // router.replace('/login')
     } else {
       console.log('Logged in')
     }

@@ -12,7 +12,7 @@
     "particles-bg": "^2.5.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "styled-components": "^5.2.0"
+    "styled-components": "^5.2.1"
   },
   "devDependencies": {
     "@types/node": "^14.11.2",
