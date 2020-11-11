@@ -1,5 +1,6 @@
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import React, { FunctionComponent } from 'react'
 import AuthGuard from '../components/AuthGuard'
 import Layout from '../components/Layout'
@@ -22,7 +23,11 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
           <p>List of aims:</p>
           <ul>
             {aims.map((aim) => (
-              <li key={aim.id}>{aim.name}</li>
+              <li key={aim.id}>
+                <Link href={`/aim/${aim.name}`}>
+                  <a>{aim.name}</a>
+                </Link>
+              </li>
             ))}
           </ul>
         </main>
