@@ -1,15 +1,20 @@
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useState } from 'react'
+import AimCard from '../components/AimCard'
 import AuthGuard from '../components/AuthGuard'
 import Layout from '../components/Layout'
+import styled from 'styled-components'
+import { TextButton } from '../components/Button'
+import Modal from '../components/Modal'
 
 type DashboardProps = {
   aims: any[]
 }
 
 const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   return (
     <Layout>
       <AuthGuard>
@@ -18,19 +23,19 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <main>
-          <h1>Dashboard</h1>
-          <p>List of aims:</p>
-          <ul>
-            {aims.map((aim) => (
-              <li key={aim.id}>
-                <Link href={`/aim/${aim.name}`}>
-                  <a>{aim.name}</a>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </main>
+        <Container>
+          <Row>
+            <h1>Your Aims</h1>
+            <TextButton onClick={() => setIsModalOpen(!isModalOpen)}>+ Aim</TextButton>
+          </Row>
+          {aims.map((aim) => (
+            <AimCard key={aim.id} aim={aim} />
+          ))}
+          {/* TODO: Empty state */}
+        </Container>
+        <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+          <h1>Add Modal</h1>
+        </Modal>
       </AuthGuard>
     </Layout>
   )
@@ -39,7 +44,6 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
 export default Dashboard
 
 export const getServerSideProps: GetStaticProps = async (context) => {
-  console.log('Getting props')
   let aims = []
   try {
     const res = await fetch('http://api:8000/aims')
@@ -55,3 +59,19 @@ export const getServerSideProps: GetStaticProps = async (context) => {
     props: { aims },
   }
 }
+
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
+const Container = styled.main`
+  max-width: 500px;
+  margin: 4rem auto 2rem;
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+`

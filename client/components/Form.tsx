@@ -73,13 +73,23 @@ const InputWrapper = styled.input`
   padding-left: 10px;
   color: ${(props) => props.theme.grey['100']};
 
-  :focus {
+  :active {
     border: 2px solid ${(props) => props.theme.grey['600']};
+  }
+
+  &:focus-visible {
+    outline-offset: 1px;
+    outline: -webkit-focus-ring-color auto 1px;
   }
 
   &::placeholder {
     font-size: 1rem;
     color: ${(props) => props.theme.grey['300']};
+  }
+
+  &[type='password']::placeholder {
+    font-size: 0.2rem;
+    letter-spacing: 0.1rem;
   }
 `
 

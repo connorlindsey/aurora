@@ -1,6 +1,6 @@
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import styled from 'styled-components'
 import AimCard from '../../components/AimCard'
 import AuthGuard from '../../components/AuthGuard'
@@ -20,7 +20,7 @@ const AimDetail: FunctionComponent<AimDetailProps> = ({ aim }) => {
         </Head>
 
         <Container>
-          <AimCard aim={{ name: aim }} />
+          <AimCard aim={{ name: aim, id: Math.floor(Math.random() * Math.floor(1000)) }} />
           <Divider />
           {/* TODO: Calendar component */}
         </Container>
@@ -47,6 +47,6 @@ const Divider = styled.hr`
 `
 
 const Container = styled.main`
-  max-width: 600px;
-  margin: 1rem auto;
+  max-width: 500px;
+  margin: 4rem auto 2rem;
 `

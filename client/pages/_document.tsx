@@ -1,5 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
-import { ServerStyleSheet } from 'styled-components';
+import { ServerStyleSheet } from 'styled-components'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -7,9 +7,10 @@ class MyDocument extends Document {
 
     // Generate SSR style sheets
     const sheet = new ServerStyleSheet()
-    ctx.renderPage = () => originalRenderPage({
-      enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />)
-    })
+    ctx.renderPage = () =>
+      originalRenderPage({
+        enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
+      })
 
     const initialProps = await Document.getInitialProps(ctx)
     return initialProps
@@ -19,7 +20,11 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <link href="https://fonts.googleapis.com/css2?family=Nunito&family=Nunito+Sans:wght@400;600&display=optional" rel="stylesheet" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&family=Nunito:wght@400;600&display=swap"
+            rel="stylesheet"
+          />
         </Head>
         <body>
           <Main />

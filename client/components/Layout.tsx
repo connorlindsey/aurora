@@ -55,7 +55,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
       <Content>
         <header>
           <Link href="/">
-            <a>twelvemonth</a>
+            <a className="logo">twelvemonth</a>
           </Link>
           <nav>
             {paths.map((path) => (
@@ -99,6 +99,9 @@ const Container = styled.div`
 const Content = styled.div`
   margin: 0 auto;
   max-width: ${(props) => props.theme.maxWidth};
+  position: relative;
+  overflow-x: hidden;
+  min-height: 100vh;
 
   header {
     padding: 1rem 0;
@@ -113,10 +116,6 @@ const Content = styled.div`
       a.nav-link:not(:last-child) {
         margin-right: 1rem;
       }
-
-      /* a.active {
-        color: ${(props) => props.theme.grey['100']};
-      } */
     }
 
     .logout {

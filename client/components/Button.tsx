@@ -27,6 +27,7 @@ const ButtonWrapper = styled.button`
   cursor: pointer;
   width: ${(props) => props.theme.width};
   border: 2px solid transparent;
+  outline: none;
 
   transition: all 0.2s ease;
 
@@ -45,10 +46,9 @@ const ButtonWrapper = styled.button`
     cursor: not-allowed;
   }
 
-  &:focus {
-    border: 2px solid
-      ${(props) => (props.secondary ? props.theme.primary['400'] : props.theme.grey['400'])};
-    outline: none;
+  &:focus-visible {
+    outline-offset: 1px;
+    outline: -webkit-focus-ring-color auto 1px;
   }
 `
 
@@ -56,14 +56,13 @@ const TextButton = styled.button`
   height: ${(props) => (props.large ? '48px' : '40px')};
   font-size: ${(props) => (props.large ? '1.2rem' : '1rem')};
   color: ${(props) => props.theme.primary['500']};
-  font-weight: 600;
   margin: ${(props) => props.margin || `0`};
-  letter-spacing: 5%;
+  letter-spacing: 0.04em;
   text-decoration: none;
-  text-transform: uppercase;
   background-color: transparent;
   border: none;
   cursor: pointer;
+  outline: none;
 
   &:hover {
     color: ${(props) => props.theme.primary['600']};
@@ -73,9 +72,9 @@ const TextButton = styled.button`
     color: ${(props) => props.theme.primary['400']};
   }
 
-  &:focus {
-    border: 2px solid ${(props) => props.theme.primary['500']};
-    outline: none;
+  &:focus-visible {
+    outline-offset: 1px;
+    outline: -webkit-focus-ring-color auto 1px;
   }
 `
 
