@@ -6,6 +6,7 @@ import { FiUser } from 'react-icons/fi'
 import styled from 'styled-components'
 import useAuth from '../services/useAuth'
 import Menu from './Menu'
+import { AnimatePresence, motion } from 'framer-motion'
 
 type LayoutProps = {
   title?: string
@@ -50,7 +51,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
     <Container>
       <Head>
         <title>{title && `${title} | `}twelvemonth</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon_1.ico" />
       </Head>
       <Content>
         <header>
@@ -81,7 +82,22 @@ const Layout: FunctionComponent<LayoutProps> = ({ title, children }) => {
             )}
           </nav>
         </header>
-        <main>{children}</main>
+        <AnimatePresence>
+          <motion.div
+            key={router.route}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              type: 'spring',
+              mass: 1,
+              stiffness: 100,
+              damping: 15,
+            }}
+          >
+            <main>{children}</main>
+          </motion.div>
+        </AnimatePresence>
       </Content>
     </Container>
   )
@@ -94,6 +110,7 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.grey['900']};
   min-height: 100vh;
   color: #fff;
+  overflow: hidden;
 `
 
 const Content = styled.div`

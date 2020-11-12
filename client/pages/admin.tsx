@@ -14,8 +14,8 @@ const Admin: FunctionComponent<AdminProps> = ({ accounts, earlyAccess }) => {
     <Layout>
       <AuthGuard requiredRole="ADMIN">
         <Head>
-          <title>dashboard | twelvemonth</title>
-          <link rel="icon" href="/favicon.ico" />
+          <title>Admin | twelvemonth</title>
+          <link rel="icon" href="/favicon_1.ico" />
         </Head>
 
         <main>

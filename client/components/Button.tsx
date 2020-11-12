@@ -8,7 +8,9 @@ interface ButtonProps {
   type?: string
 }
 
-const Button: React.FunctionComponent<ButtonProps> = (props) => {
+const Button: React.FunctionComponent<ButtonProps & React.HTMLProps<HTMLButtonElement>> = (
+  props
+) => {
   const { loading, ...otherProps } = props
   return <ButtonWrapper {...otherProps}>{loading ? 'Loading' : props.children}</ButtonWrapper>
 }

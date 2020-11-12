@@ -39,9 +39,7 @@ const Modal = ({ isOpen, setIsOpen, children }) => {
               exit={{ opacity: 0, scale: 0, top: '50%' }}
               transition={{
                 type: 'spring',
-                damping: 10,
-                stiffness: 100,
-                mass: 0.8,
+                mass: 0.9,
               }}
             >
               <StyledModal ref={ref}>
@@ -67,13 +65,11 @@ const Overlay = styled(motion.div)`
   width: 100%;
   height: 100%;
   background-color: ${(props) => props.theme.grey['900']};
-  /* opacity: 0.9; */
   z-index: 5;
 `
 
 const StyledModal = styled.div`
   position: fixed;
-  /* top: 30%; */
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 6;

@@ -16,7 +16,7 @@ const AimDetail: FunctionComponent<AimDetailProps> = ({ aim }) => {
       <AuthGuard>
         <Head>
           <title>AimDetail | twelvemonth</title>
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/favicon_1.ico" />
         </Head>
 
         <Container>
