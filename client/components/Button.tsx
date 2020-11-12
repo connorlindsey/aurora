@@ -6,6 +6,7 @@ interface ButtonProps {
   secondary?: boolean
   width?: any
   type?: string
+  onClick?: () => void
 }
 
 const Button: React.FunctionComponent<ButtonProps> = (props) => {

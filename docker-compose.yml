@@ -11,7 +11,7 @@ services:
     volumes:
       - ./db-data:/var/lib/postgresql/data/ # Persist data locally
     ports:
-      - 5432:5432
+      - 5432:5433
   api:
     build: ./server
     command: npm run dev
