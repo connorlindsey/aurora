@@ -9,13 +9,16 @@ import { Button, TextButton } from '../components/Button'
 import Modal from '../components/Modal'
 import { Form, Input } from '../components/Form'
 import { STATUS } from '../types/common'
+import { createAim, getAims } from '../services/AimService'
 
 type DashboardProps = {
   aims: any[]
+  errorMessage: string
 }
 
 // TODO: Update aim to route on id instead of name
-const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
+const Dashboard: FunctionComponent<DashboardProps> = ({ aims: initialAims, errorMessage }) => {
+  const [aims, setAims] = useState(initialAims)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [status, setStatus] = useState<STATUS>(STATUS.DEFAULT)
   const [error, setError] = useState({ key: '', message: '' })
@@ -30,29 +33,38 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
     })
   }
 
-  const handleSubmit = async (e: Event) => {
+  const handleCreate = async (e: Event) => {
     e.preventDefault()
-    if (!formValues.name) {
-      return
-    }
+    if (!formValues.name) return
 
     setStatus(STATUS.LOADING)
     try {
-      // TODO: Call aimService
-      const res = 'Success'
-      if (res === 'Success') {
+      const res = await createAim(formValues.name)
+      if (res.status === 'Success') {
         setStatus(STATUS.SUCCESS)
         setIsModalOpen(false)
+        setAims([...aims, res.data])
       } else {
-        throw new Error(res)
+        throw new Error(res.message)
       }
     } catch (e) {
       if (e instanceof Error) {
-        console.error(e.message)
+        // TODO: Remove the error when the modal is closed
         setError({ key: 'FORM', message: e.message })
       }
       setStatus(STATUS.ERROR)
     }
+  }
+
+  if (errorMessage) {
+    return (
+      <Layout>
+        <Container>
+          <h1>Error</h1>
+          <p>{errorMessage}</p>
+        </Container>
+      </Layout>
+    )
   }
 
   return (
@@ -85,7 +97,7 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
         </Container>
         <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
           <Form
-            onSubmit={handleSubmit}
+            onSubmit={handleCreate}
             padding=".5rem 0 0"
             maxWidth="420px"
             errorKey="FORM"
@@ -115,19 +127,10 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims }) => {
 export default Dashboard
 
 export const getServerSideProps: GetStaticProps = async (context) => {
-  let aims = []
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/aims`)
-    const data = await res.json()
-    aims = data
-  } catch (e) {
-    if (e instanceof Error) {
-      console.error(e.message)
-    }
-  }
+  let data = await getAims()
 
   return {
-    props: { aims },
+    props: { aims: data.aims || [], errorMessage: data.message || '' },
   }
 }
 

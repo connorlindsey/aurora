@@ -66,7 +66,7 @@ const aims: Aim[] = [
   { id: 3, name: 'Journal' },
 ]
 
-app.get('/aims', (req, res) => res.json(aims))
+app.get('/aims', (req, res) => res.json({ status: 'Success', aims }))
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`)

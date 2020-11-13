@@ -37,7 +37,6 @@ export default Admin
 export const getServerSideProps: GetStaticProps = async (context) => {
   let accounts = []
   let earlyAccess = []
-  console.log('Getting admin props')
   try {
     let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/admin/accounts`)
     accounts = await res.json()

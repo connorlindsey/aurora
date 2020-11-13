@@ -3,6 +3,7 @@ import { FiX } from 'react-icons/fi'
 import styled from 'styled-components'
 import { AnimatePresence, motion } from 'framer-motion'
 
+// Use React Portals to enter more smoothly
 const Modal = ({ isOpen, setIsOpen, children }) => {
   const ref = useRef<HTMLElement>()
 

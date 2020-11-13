@@ -1,16 +1,29 @@
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 import AimCard from '../../components/AimCard'
 import AuthGuard from '../../components/AuthGuard'
 import Layout from '../../components/Layout'
+import { getAim } from '../../services/AimService'
 
 type AimDetailProps = {
   aim: any[]
+  errorMessage: string
 }
 
-const AimDetail: FunctionComponent<AimDetailProps> = ({ aim }) => {
+const AimDetail: FunctionComponent<AimDetailProps> = ({ aim, errorMessage }) => {
+  if (!aim || errorMessage) {
+    return (
+      <Layout>
+        <Container>
+          <h2>Error</h2>
+          <p>{errorMessage || 'Unable to fetch aim. Please try again later'}</p>
+        </Container>
+      </Layout>
+    )
+  }
+
   return (
     <Layout>
       <AuthGuard>
@@ -20,7 +33,7 @@ const AimDetail: FunctionComponent<AimDetailProps> = ({ aim }) => {
         </Head>
 
         <Container>
-          <AimCard aim={{ name: aim, id: Math.floor(Math.random() * Math.floor(1000)) }} />
+          <AimCard aim={aim} />
           <Divider />
           {/* TODO: Calendar component */}
         </Container>
@@ -32,10 +45,11 @@ const AimDetail: FunctionComponent<AimDetailProps> = ({ aim }) => {
 export default AimDetail
 
 export const getServerSideProps: GetStaticProps = async (context) => {
-  const { aim } = context.params
+  let { id } = context.params
+  let data = await getAim(id as string)
 
   return {
-    props: { aim },
+    props: { aim: data.aim, errorMessage: data.message || '' },
   }
 }
 
