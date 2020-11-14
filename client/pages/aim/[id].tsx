@@ -4,6 +4,7 @@ import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
 import AimCard from '../../components/AimCard'
 import AuthGuard from '../../components/AuthGuard'
+import DotCalendar from '../../components/DotCalendar'
 import Layout from '../../components/Layout'
 import { getAim } from '../../services/AimService'
 
@@ -35,7 +36,7 @@ const AimDetail: FunctionComponent<AimDetailProps> = ({ aim, errorMessage }) => 
         <Container>
           <AimCard aim={aim} />
           <Divider />
-          {/* TODO: Calendar component */}
+          <DotCalendar />
         </Container>
       </AuthGuard>
     </Layout>

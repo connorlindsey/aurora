@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "framer-motion": "^2.9.4",
+    "moment": "^2.29.1",
     "next": "^10.0.1",
     "particles-bg": "^2.5.0",
     "react": "16.13.1",
