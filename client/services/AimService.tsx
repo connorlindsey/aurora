@@ -1,4 +1,4 @@
-export const createAim = async (name: string) => {
+export const createAim = async (name: string, description: string) => {
   return {
     status: 'Success',
     data: { id: Math.floor(Math.random() * Math.floor(1000)), name: 'New Aim' },
@@ -10,7 +10,7 @@ export const createAim = async (name: string) => {
     //   headers: {
     //     'Content-Type': 'application/json',
     //   },
-    //   body: JSON.stringify({ name, token }),
+    //   body: JSON.stringify({ user_id, name, description ,token  }),
     // })
     // const data = await res.json()
     // if (data.status === 'Success') {
@@ -38,7 +38,7 @@ export const editAim = async (name: string, id: string) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, token, id }),
+      body: JSON.stringify({ name, token, aim_id: id }),
     })
     const data = await res.json()
 
@@ -61,7 +61,7 @@ export const deleteAim = async (id: string) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ token, id }),
+      body: JSON.stringify({ token, aim_id: id }),
     })
     const data = await res.json()
 
@@ -102,6 +102,7 @@ export const getAim = async (id: string) => {
 
 export const getAims = async () => {
   try {
+    // need to add user ID here
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/aims`)
     const data = await res.json()
 

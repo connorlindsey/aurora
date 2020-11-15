@@ -8,8 +8,16 @@ import {
   register,
   updatePassword,
   validateSession,
-} from './src/controllers/accountcontroller'
-import { getAccounts, getEarlyAccess } from './src/controllers/admincontroller'
+} from './src/controllers/admin'
+import { getAccounts, getEarlyAccess } from './src/controllers/account'
+import { 
+	getAllAims,
+	getAims,
+	getAim,
+	createAim,
+	deleteAim,
+	editAim,
+} from './src/controllers/aim'
 
 const PORT = process.env.PORT || 8000
 const isProduction = process.env.NODE_ENV === 'production'
@@ -54,19 +62,12 @@ app.route('/updatePassword').post(updatePassword)
 // Admin
 app.route('/admin/accounts').get(getAccounts)
 app.route('/admin/earlyAccess').get(getEarlyAccess)
-
-// Aims
-type Aim = {
-  id: number
-  name: string
-}
-const aims: Aim[] = [
-  { id: 1, name: 'Stretch' },
-  { id: 2, name: 'Read' },
-  { id: 3, name: 'Journal' },
-]
-
-app.get('/aims', (req, res) => res.json({ status: 'Success', aims }))
+app.route('/admin/aims').get(getAllAims)
+app.route('/aims/:user_id').get(getAims)     // get all aims for a user
+app.route('/aim/:user_id/:aim_id').get(getAim)       // get aim
+app.route('/aim').post(createAim)   // create aim
+app.route('/aim').put(editAim)      // edit aim
+app.route('/aim').delete(deleteAim) // delete aim
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`)
