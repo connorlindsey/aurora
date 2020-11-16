@@ -1,0 +1,32 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: twelvemonth
+      POSTGRES_PASSWORD: localpost
+      POSTGRES_DB: twelvemonth
+    volumes:
+      - ./db-data:/var/lib/postgresql/data/ # Persist data locally
+    ports:
+      - 5432:5432
+  api:
+    build: ./server
+    command: npm run dev
+    volumes:
+      - ./server:/usr/server
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+  client:
+    build: ./client
+    command: npm run dev
+    volumes:
+      - ./client:/usr/client
+    ports:
+      - 3000:3000
+    depends_on:
+      - api
