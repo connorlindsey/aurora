@@ -16,7 +16,6 @@ type DashboardProps = {
   errorMessage: string
 }
 
-// TODO: Update aim to route on id instead of name
 const Dashboard: FunctionComponent<DashboardProps> = ({ aims: initialAims, errorMessage }) => {
   const [aims, setAims] = useState(initialAims)
   const [isModalOpen, setIsModalOpen] = useState(false)

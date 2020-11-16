@@ -77,6 +77,7 @@ const AimCard: React.FunctionComponent<AimCardProps> = ({ aim: initialAim }) => 
     }
   }
 
+  // TODO: Finish completion code
   const [isComplete, setIsComplete] = useState(false)
   const toggleCompletion = () => {
     setIsComplete(!isComplete)
