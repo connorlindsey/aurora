@@ -100,7 +100,7 @@ export const validateSession = async (req: Request, res: Response) => {
 	console.log('row: ', rows[0])
       return res
         .status(200)
-        .json({ status: 'Success', user: { role: rows[0].role, authenticated: true } })
+        .json({ status: 'Success', user: { token, role: rows[0].role, authenticated: true } })
     }
 
     return res.status(400).json({ status: 'Error', message: 'Invalid session' })
