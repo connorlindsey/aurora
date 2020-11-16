@@ -1,28 +1,16 @@
 import { createContext, useEffect, useState, useContext } from 'react'
 import { STATUS } from '../types/common'
 
-type authProps = {
-  // prettier-ignore
-  authenticationToken: {
-    role: string,
-    token: string,
-    email: string,
-    user_id: string
-  } | null;
-
-  setAuthenticationToken: React.Dispatch<React.SetStateAction<null>>
-}
-
-const authContext = createContext<Partial<authProps>>({})
+const authContext = createContext<any>({})
 const { Provider } = authContext
 
 interface User {
   role: string
   authenticated: boolean
+  id: string
 }
 
 const AuthService = ({ children }) => {
-  const { authenticationToken, setAuthenticationToken } = useContext(authContext)
   const [user, setUser] = useState<User>(null)
   const [authStatus, setStatus] = useState<STATUS>(STATUS.LOADING)
 
@@ -98,18 +86,8 @@ const AuthService = ({ children }) => {
       })
       const data = await res.json()
       if (data.status === 'Success') {
-        setAuthenticationToken({
-          user_id: data.user_id,
-          token: data.token,
-          email: req.email,
-          role: data.role,
-        })
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('TOKEN', data.token)
-          localStorage.setItem('USER_ID', data.user_id)
-          localStorage.setItem('ROLE', data.role)
-          localStorage.setItem('ACCOUNT', req.email)
-        }
+        localStorage.setItem('TOKEN', data.token)
+        localStorage.setItem('ACCOUNT', req.email)
         await authenticate()
         return data.status
       } else {
