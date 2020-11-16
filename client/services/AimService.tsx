@@ -1,3 +1,5 @@
+import useAuth from '../services/useAuth'
+
 export const createAim = async (name: string, description: string) => {
   return {
     status: 'Success',
@@ -102,13 +104,7 @@ export const getAim = async (id: string) => {
 
 export const getAims = async () => {
   try {
-    return [
-      {
-        name: 'Journal',
-        id: '02934',
-      },
-    ]
-    const id = localStorage.getItem('USER_ID')
+    const id = 1 // still need to get a user or token to get aims for a user here
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/aims/${id}`)
     const data = await res.json()
 

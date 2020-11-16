@@ -10,13 +10,14 @@ import Modal from '../components/Modal'
 import { Form, Input } from '../components/Form'
 import { STATUS } from '../types/common'
 import { createAim, getAims } from '../services/AimService'
-
+import useAuth from '../services/useAuth'
 type DashboardProps = {
   aims: any[]
   errorMessage: string
 }
 
 const Dashboard: FunctionComponent<DashboardProps> = ({ aims: initialAims, errorMessage }) => {
+  const { user } = useAuth()
   const [aims, setAims] = useState(initialAims)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [status, setStatus] = useState<STATUS>(STATUS.DEFAULT)
