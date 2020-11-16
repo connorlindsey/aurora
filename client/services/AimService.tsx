@@ -1,3 +1,5 @@
+import { type } from 'os'
+
 export const createAim = async (name: string, description: string) => {
   return {
     status: 'Success',
@@ -23,7 +25,7 @@ export const createAim = async (name: string, description: string) => {
   }
 }
 
-export const editAim = async (name: string, id: string) => {
+export const editAim = async (name: string | null, description: string | null, id: string) => {
   return {
     status: 'Success',
     aim: {
@@ -102,8 +104,8 @@ export const getAim = async (id: string) => {
 
 export const getAims = async () => {
   try {
-    // need to add user ID here
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/aims`)
+    const id = localStorage.getItem('USER_ID')
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/aims/${id}`)
     const data = await res.json()
 
     if (data.status === 'Success') {

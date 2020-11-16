@@ -83,8 +83,12 @@ const AuthService = ({ children }) => {
       })
       const data = await res.json()
       if (data.status === 'Success') {
-        localStorage.setItem('TOKEN', data.token)
-        localStorage.setItem('ACCOUNT', req.email)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('TOKEN', data.token)
+          localStorage.setItem('USER_ID', data.user_id)
+          localStorage.setItem('ROLE', data.role)
+          localStorage.setItem('ACCOUNT', req.email)
+        }
         await authenticate()
         return data.status
       } else {
