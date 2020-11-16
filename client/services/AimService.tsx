@@ -115,7 +115,7 @@ export const getAims = async () => {
     }
   } catch (e) {
     if (e instanceof Error) {
-      console.error(e.message)
+      console.error('[ERROR] ', e)
       return { status: 'Error', message: e.message }
     }
   }
