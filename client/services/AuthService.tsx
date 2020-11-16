@@ -1,7 +1,19 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState, useContext } from 'react'
 import { STATUS } from '../types/common'
 
-const authContext = createContext<any>({})
+type authProps = {
+  // prettier-ignore
+  authenticationToken: {
+    role: string,
+    token: string,
+    email: string,
+    user_id: string
+  } | null;
+
+  setAuthenticationToken: React.Dispatch<React.SetStateAction<null>>
+}
+
+const authContext = createContext<Partial<authProps>>({})
 const { Provider } = authContext
 
 interface User {
@@ -10,6 +22,7 @@ interface User {
 }
 
 const AuthService = ({ children }) => {
+  const { authenticationToken, setAuthenticationToken } = useContext(authContext)
   const [user, setUser] = useState<User>(null)
   const [authStatus, setStatus] = useState<STATUS>(STATUS.LOADING)
 
@@ -38,6 +51,8 @@ const AuthService = ({ children }) => {
 
       if (data.status === 'Success') {
         setUser(data.user)
+        console.log('data.user: ', data.user)
+        // setAuthenticationToken({})
         setStatus(STATUS.DEFAULT)
       } else {
         throw new Error(data.message)
@@ -83,6 +98,12 @@ const AuthService = ({ children }) => {
       })
       const data = await res.json()
       if (data.status === 'Success') {
+        setAuthenticationToken({
+          user_id: data.user_id,
+          token: data.token,
+          email: req.email,
+          role: data.role,
+        })
         if (typeof window !== 'undefined') {
           localStorage.setItem('TOKEN', data.token)
           localStorage.setItem('USER_ID', data.user_id)

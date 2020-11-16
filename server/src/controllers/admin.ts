@@ -97,6 +97,7 @@ export const validateSession = async (req: Request, res: Response) => {
     )
 
     if (rows.length === 1 && rows[0].expires_at > Date.now()) {
+	console.log('row: ', rows[0])
       return res
         .status(200)
         .json({ status: 'Success', user: { role: rows[0].role, authenticated: true } })
