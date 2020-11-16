@@ -1,5 +1,3 @@
-import { type } from 'os'
-
 export const createAim = async (name: string, description: string) => {
   return {
     status: 'Success',
