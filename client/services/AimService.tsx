@@ -102,10 +102,16 @@ export const getAim = async (id: string) => {
   }
 }
 
-export const getAims = async () => {
+export const getAims = async (userId, token) => {
   try {
     const id = 1 // still need to get a user or token to get aims for a user here
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/aims/${id}`)
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/aims/${id}`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'Application/json',
+      },
+    })
     const data = await res.json()
 
     if (data.status === 'Success') {

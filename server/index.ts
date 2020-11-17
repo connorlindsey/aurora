@@ -33,6 +33,7 @@ app.use(
     origin: isProduction ? 'https://twelvemonth.vercel.app' : '*',
   })
 )
+app.use(cors())
 
 app.get('/', (req, res) => res.send('twelvemonth API'))
 

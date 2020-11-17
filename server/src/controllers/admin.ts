@@ -89,7 +89,7 @@ export const validateSession = async (req: Request, res: Response) => {
   try {
     const { rows } = await pool.query(
       `
-        SELECT s.expires_at, a.role FROM session AS s 
+        SELECT s.expires_at, a.role, a.id FROM session AS s 
         LEFT JOIN account AS a ON s.email = a.email
         WHERE s.token = $1 AND s.email = $2
       `,
@@ -100,7 +100,7 @@ export const validateSession = async (req: Request, res: Response) => {
 	console.log('row: ', rows[0])
       return res
         .status(200)
-        .json({ status: 'Success', user: { token, role: rows[0].role, authenticated: true } })
+        .json({ status: 'Success', user: { token, role: rows[0].role, authenticated: true, id: rows[0].id } })
     }
 
     return res.status(400).json({ status: 'Error', message: 'Invalid session' })

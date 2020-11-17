@@ -24,7 +24,7 @@ const AuthService = ({ children }) => {
     setStatus(STATUS.LOADING)
     // 1. Get ACCOUNT and TOKEN
     const token = localStorage.getItem('TOKEN')
-    const email = localStorage.getItem('ACCOUNT')
+    const email = localStorage.getItem('ACCOUNT') // can we change this to EMAIL, ?
 
     // 2. Validate with backend
     try {
@@ -39,8 +39,6 @@ const AuthService = ({ children }) => {
 
       if (data.status === 'Success') {
         setUser(data.user)
-        console.log('data.user: ', data.user)
-        // setAuthenticationToken({})
         setStatus(STATUS.DEFAULT)
       } else {
         throw new Error(data.message)
