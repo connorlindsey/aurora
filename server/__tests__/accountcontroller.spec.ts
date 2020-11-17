@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { register } from '../src/controllers/accountcontroller'
+import { register } from '../src/controllers/admin'
 
 describe('Sign up', () => {
   it('should register a new user', async () => {

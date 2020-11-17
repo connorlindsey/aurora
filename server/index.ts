@@ -8,13 +8,23 @@ import {
   register,
   updatePassword,
   validateSession,
-} from './src/controllers/accountcontroller'
-import { getAccounts, getEarlyAccess } from './src/controllers/admincontroller'
+  authenticateRequest
+} from './src/controllers/admin'
+import { getAccounts, getEarlyAccess } from './src/controllers/account'
+import { 
+	getAllAims,
+	getAims,
+	getAim,
+	createAim,
+	deleteAim,
+	editAim,
+} from './src/controllers/aim'
 
 const PORT = process.env.PORT || 8000
 const isProduction = process.env.NODE_ENV === 'production'
 
 const app = express()
+const router = express.Router()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -23,6 +33,7 @@ app.use(
     origin: isProduction ? 'https://twelvemonth.vercel.app' : '*',
   })
 )
+app.use(cors())
 
 app.get('/', (req, res) => res.send('twelvemonth API'))
 
@@ -42,7 +53,9 @@ const addEarlyAccess = (req, res) => {
 }
 
 // Early Access
-app.route('/earlyaccess').get(getEarlyAccess).post(addEarlyAccess)
+app.route('/earlyaccess')
+	.get(getEarlyAccess)
+	.post(addEarlyAccess)
 
 // Authentication
 app.route('/register').post(register)
@@ -54,19 +67,18 @@ app.route('/updatePassword').post(updatePassword)
 // Admin
 app.route('/admin/accounts').get(getAccounts)
 app.route('/admin/earlyAccess').get(getEarlyAccess)
+app.route('/admin/aims').get(getAllAims)
 
 // Aims
-type Aim = {
-  id: number
-  name: string
-}
-const aims: Aim[] = [
-  { id: 1, name: 'Stretch' },
-  { id: 2, name: 'Read' },
-  { id: 3, name: 'Journal' },
-]
-
-app.get('/aims', (req, res) => res.json({ status: 'Success', aims }))
+app.all('*', (req, res, next) => authenticateRequest(req, res, next)) // place before any authenticated routes
+app.route('/aim/:user_id/:aim_id')
+	.get(getAim)
+app.route('/aims/:user_id')
+	.get(getAims)             
+app.route('/aim')
+	.post(createAim)   				 
+	.put(editAim)      				 
+	.delete(deleteAim) 				 
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`)

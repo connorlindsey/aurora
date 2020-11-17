@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useEffect, useState, useContext } from 'react'
 import { STATUS } from '../types/common'
 
 const authContext = createContext<any>({})
@@ -7,6 +7,7 @@ const { Provider } = authContext
 interface User {
   role: string
   authenticated: boolean
+  id: string
 }
 
 const AuthService = ({ children }) => {
@@ -23,7 +24,7 @@ const AuthService = ({ children }) => {
     setStatus(STATUS.LOADING)
     // 1. Get ACCOUNT and TOKEN
     const token = localStorage.getItem('TOKEN')
-    const email = localStorage.getItem('ACCOUNT')
+    const email = localStorage.getItem('ACCOUNT') // can we change this to EMAIL, ?
 
     // 2. Validate with backend
     try {

@@ -2,3 +2,5 @@ node_modules
 .prettierrc.json
 .env
 dist
+yarn.lock
+package-lock.json
