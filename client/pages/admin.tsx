@@ -1,4 +1,4 @@
-import { GetStaticProps } from 'next'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Head from 'next/head'
 import React, { FunctionComponent } from 'react'
 import AuthGuard from '../components/AuthGuard'
@@ -34,17 +34,23 @@ const Admin: FunctionComponent<AdminProps> = ({ accounts, earlyAccess }) => {
 
 export default Admin
 
-export const getServerSideProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   let accounts = []
   let earlyAccess = []
   try {
-    let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/admin/accounts`)
-    accounts = await res.json()
-    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/admin/earlyAccess`)
-    earlyAccess = await res.json()
+    let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/admin/accounts`, {
+      headers: context.req ? { cookie: context.req.headers.cookie } : undefined,
+    })
+    let data = await res.json()
+    if (data.status === 'Success') accounts = data.data
+
+    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/admin/earlyAccess`, {
+      headers: context.req ? { cookie: context.req.headers.cookie } : undefined,
+    })
+    data = await res.json()
+    if (data.status === 'Success') earlyAccess = data.data
   } catch (e) {
     if (e instanceof Error) {
-      console.log('Error getting props')
       console.error(e.message)
     }
   }

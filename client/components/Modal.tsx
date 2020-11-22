@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { AnimatePresence, motion } from 'framer-motion'
 import { createPortal } from 'react-dom'
 
+// TODO: Autofocus and trap focus inside
 const Modal = ({ isOpen, setIsOpen, children }) => {
   const ref = useRef<HTMLElement>()
 

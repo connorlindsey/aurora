@@ -8,32 +8,26 @@ import {
   register,
   updatePassword,
   validateSession,
-  authenticateRequest
-} from './src/controllers/admin'
-import { getAccounts, getEarlyAccess } from './src/controllers/account'
-import { 
-	getAllAims,
-	getAims,
-	getAim,
-	createAim,
-	deleteAim,
-	editAim,
-} from './src/controllers/aim'
+  authenticateRequest,
+} from './src/controllers/account'
+import { getAccounts, getEarlyAccess } from './src/controllers/admin'
+import { getAllAims, getAims, getAim, createAim, deleteAim, editAim } from './src/controllers/aim'
+import cookieParser from 'cookie-parser'
 
 const PORT = process.env.PORT || 8000
 const isProduction = process.env.NODE_ENV === 'production'
 
 const app = express()
-const router = express.Router()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   cors({
-    origin: isProduction ? 'https://twelvemonth.vercel.app' : '*',
+    origin: isProduction ? 'https://twelvemonth.vercel.app' : 'http://localhost:3000',
+    credentials: true,
   })
 )
-app.use(cors())
+app.use(cookieParser())
 
 app.get('/', (req, res) => res.send('twelvemonth API'))
 
@@ -52,17 +46,18 @@ const addEarlyAccess = (req, res) => {
   })
 }
 
+// Check authentication for all requests
+app.all('*', (req, res, next) => authenticateRequest(req, res, next))
+
 // Early Access
-app.route('/earlyaccess')
-	.get(getEarlyAccess)
-	.post(addEarlyAccess)
+app.route('/earlyaccess').get(getEarlyAccess).post(addEarlyAccess)
 
 // Authentication
 app.route('/register').post(register)
 app.route('/login').post(login)
-app.route('/authenticate').post(validateSession)
 app.route('/logout').post(logout)
 app.route('/updatePassword').post(updatePassword)
+app.route('/authenticate').post(validateSession)
 
 // Admin
 app.route('/admin/accounts').get(getAccounts)
@@ -70,15 +65,9 @@ app.route('/admin/earlyAccess').get(getEarlyAccess)
 app.route('/admin/aims').get(getAllAims)
 
 // Aims
-app.all('*', (req, res, next) => authenticateRequest(req, res, next)) // place before any authenticated routes
-app.route('/aim/:user_id/:aim_id')
-	.get(getAim)
-app.route('/aims/:user_id')
-	.get(getAims)             
-app.route('/aim')
-	.post(createAim)   				 
-	.put(editAim)      				 
-	.delete(deleteAim) 				 
+app.route('/aims/').get(getAims)
+app.route('/aims/:aim_id').get(getAim)
+app.route('/aim').post(createAim).put(editAim).delete(deleteAim)
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`)

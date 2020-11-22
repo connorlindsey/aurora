@@ -1,6 +1,6 @@
-import { GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
 import Head from 'next/head'
-import React, { FunctionComponent, useState, useEffect } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import AimCard from '../components/AimCard'
 import AuthGuard from '../components/AuthGuard'
 import Layout from '../components/Layout'
@@ -9,32 +9,21 @@ import { Button, TextButton } from '../components/Button'
 import Modal from '../components/Modal'
 import { Form, Input } from '../components/Form'
 import { STATUS } from '../types/common'
-import { createAim, getAims } from '../services/AimService'
-import useAuth from '../services/useAuth'
+import { createAim } from '../services/AimService'
+
 type DashboardProps = {
   aims: any[]
   errorMessage: string
 }
 
 const Dashboard: FunctionComponent<DashboardProps> = ({ aims: initialAims, errorMessage }) => {
-  const { user } = useAuth()
-  const [aims, setAims] = useState([])
+  const [aims, setAims] = useState(initialAims)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [status, setStatus] = useState<STATUS>(STATUS.DEFAULT)
   const [error, setError] = useState({ key: '', message: '' })
   const [formValues, setFormValues] = useState({
     name: '',
   })
-
-  useEffect(() => {
-    const fetchAims = async () => {
-      const data = await getAims(user?.id, localStorage.getItem('TOKEN'))
-      console.log('data:', data)
-      if (data.status === 'Success') setAims(data.aims)
-    }
-
-    fetchAims()
-  }, [])
 
   const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
     setError({ key: '', message: '' })
@@ -50,11 +39,11 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims: initialAims, error
 
     setStatus(STATUS.LOADING)
     try {
-      const res = await createAim(formValues.name, '') // need to collect and send description eventually
+      const res = await createAim(formValues.name, '')
       if (res.status === 'Success') {
         setStatus(STATUS.SUCCESS)
         setIsModalOpen(false)
-        setAims([...aims, res.data])
+        setAims([...aims, ...res.data])
       } else {
         throw new Error(res.message)
       }
@@ -137,13 +126,31 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims: initialAims, error
 
 export default Dashboard
 
-// export const getServerSideProps: GetStaticProps = async (context) => {
-//   console.log('contex: ', context)
-//   let data = await getAims()
-//   return {
-//     props: { aims: data.aims || [], errorMessage: data.message || '' },
-//   }
-// }
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  let aims = []
+  let errorMessage = ''
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/aims/`, {
+      headers: context.req ? { cookie: context.req.headers.cookie } : undefined,
+      credentials: 'include',
+    })
+    const data = await res.json()
+
+    if (data.status === 'Success') {
+      aims = data.data
+    } else {
+      throw new Error(data.message)
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      errorMessage = e.message
+    }
+  }
+
+  return {
+    props: { aims, errorMessage },
+  }
+}
 
 const Row = styled.div`
   display: flex;
