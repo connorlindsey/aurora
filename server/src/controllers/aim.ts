@@ -1,129 +1,115 @@
 import { Request, Response } from 'express'
 import { pool } from '../../config'
 
-
-// createAim
-// editAim
-// delteAim
-// getAims
-// getAim (aim entries)
-// markAimComplete
-// markAimIncomplete
-
 export const getAllAims = async (req: Request, res: Response) => {
-	try {
-	  console.log('getAims')
-	  const { rows } = await pool.query(`SELECT * FROM aim;`)
-	  return res.status(200).json(rows)
-	} catch (e) {
-	  if (e instanceof Error) {
-		console.error(e.message)
-		return res.status(500).json({ status: 'Error', message: e.message })
-	  }
-	}
-  }
+  try {
+    const { isAuthenticated, role } = res.locals.authStatus
+    if (!isAuthenticated || role !== 'ADMIN') {
+      throw new Error('Unauthenticated request')
+    }
 
+    const { rows } = await pool.query(`SELECT * FROM aim;`)
+    return res.status(200).json(rows)
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      return res.status(500).json({ status: 'Error', message: e.message })
+    }
+  }
+}
 
 export const getAims = async (req: Request, res: Response) => {
-	try {
-	  
-		let user_id = req.params['user_id'] 
-	  console.log(`[getAims input] user_id: ${user_id}`)
+  try {
+    const { isAuthenticated, id } = res.locals.authStatus
+    if (!isAuthenticated) throw new Error('Unathenticated request')
 
-	  const { rows } = await pool.query(`
-	 	SELECT * FROM aim WHERE account_id = '${user_id}';
+    const { rows } = await pool.query(`
+	 		SELECT * FROM aim WHERE account_id = '${id}';
 	  `)
-	  return res.status(200).json(rows)
-	} catch (e) {
-	  if (e instanceof Error) {
-		console.error(e.message)
-		return res.status(500).json({ status: 'Error', message: e.message })
-	  }
-	}
+    return res.status(200).json({ status: 'Success', data: rows })
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      return res.status(500).json({ status: 'Error', message: e.message })
+    }
+  }
 }
 
 export const getAim = async (req: Request, res: Response) => {
-	try {
-	  let user_id = req.params['user_id'] 
-	  let aim_id = req.params['aim_id']
-	  
-	  console.log(`[getAim input] user_id: ${user_id}, aim_id:${aim_id}`)
+  try {
+    const { isAuthenticated, id: user_id } = res.locals.authStatus
+    if (!isAuthenticated) throw new Error('Unathenticated request')
+    let aim_id = req.params['aim_id']
 
-	  const { rows } = await pool.query(`
-	 	 SELECT * FROM aim WHERE id = '${aim_id}' AND account_id = '${user_id}';
+    const { rows } = await pool.query(`
+	 		SELECT * FROM aim WHERE id = '${aim_id}' AND account_id = '${user_id}';
 	  `)
-	  return res.status(200).json(rows)
-	} catch (e) {
-	  if (e instanceof Error) {
-		console.error(e.message)
-		return res.status(500).json({ status: 'Error', message: e.message })
-	  }
-	}
+    return res.status(200).json({ status: 'Success', aim: rows[0] })
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      return res.status(500).json({ status: 'Error', message: e.message })
+    }
+  }
 }
 
-export const deleteAim = async (req: Request, res: Response) => { // test this
-	try {
-	 
-    let aim_id = req.body['aim_id']
-	  console.log(`[deleteAim input] aim_id:${aim_id}`)
-	  const { rows } = await pool.query(`
-	 	  DELETE FROM aim WHERE id = '${aim_id}' RETURNING *;
+export const deleteAim = async (req: Request, res: Response) => {
+  try {
+    const { aim_id } = req.body
+    const { rows } = await pool.query(`
+	 	  DELETE FROM aim WHERE id = '${aim_id}';
 	  `)
-	  return res.status(200).json(rows)
-	} catch (e) {
-	  if (e instanceof Error) {
-		console.error(e.message)
-		return res.status(500).json({ status: 'Error', message: e.message })
-	  }
-	}
+    return res.status(200).json({ status: 'Success' })
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      return res.status(500).json({ status: 'Error', message: e.message })
+    }
+  }
 }
 
 export const createAim = async (req: Request, res: Response) => {
-	try {
+  try {
+    const { name, description = '' } = req.body
+    const { isAuthenticated, id } = res.locals.authStatus
+    if (!isAuthenticated) throw new Error('Unauthenticated user')
 
-    let user_id = req.body['user_id']
-    let name  = req.body['name']
-    let description = req.body['description']
-    
-    console.log(`[createAim input] user_id:${user_id}, name:${name}, description:${description} `)
     const { rows } = await pool.query(`
-      INSERT INTO aim(id, name, created_at, account_id, description) 
-      VALUES (DEFAULT, '${name}', NOW(), '${user_id}', '${description}')
+      INSERT INTO aim (name, created_at, account_id, description) 
+      VALUES ('${name}', NOW(), '${id}', '${description}')
       RETURNING *;
-	  `)
-	  return res.status(200).json(rows)
-	} catch (e) {
-	  if (e instanceof Error) {
-		console.error(e.message)
-		return res.status(500).json({ status: 'Error', message: e.message })
-	  }
-	}
-}
+    `)
 
+    return res.status(200).json({ status: 'Success', data: rows })
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      return res.status(500).json({ status: 'Error', message: e.message })
+    }
+  }
+}
 
 export const editAim = async (req: Request, res: Response) => {
-	try {
+  try {
+    const { isAuthenticated } = res.locals.authStatus
+    if (!isAuthenticated) throw new Error('Unauthenticated request')
 
-    let name  = req.body?.name
-    let description = req.body?.description
-    let aim_id = req.body?.aim_id
+    const { name, description, aim_id } = req.body
+    if (!name && !description) throw new Error('Must include aim attribute to update.')
 
-    if(!name && !description) throw new Error('Must include aim attribute to update.') 
-
-    console.log(`[editAim input] aim_id: ${aim_id}, name: ${name}, description: ${description} `)
-    const { rows } = await pool.query(`
-      UPDATE aim SET
-        ${ name? `name = '${name}',`: '' } 
-        ${ description? `description = '${description}'`: '' } 
-      WHERE id='${aim_id}'
+    const { rows } = await pool.query(
+      `
+      UPDATE aim SET name = $1, description = $2
+      WHERE id = $3
       RETURNING *;
-	  `)
-	  return res.status(200).json(rows)
-	} catch (e) {
-	  if (e instanceof Error) {
-		console.error(e.message)
-		return res.status(500).json({ status: 'Error', message: e.message })
-	  }
-	}
+	  `,
+      [name, description, aim_id]
+    )
+    return res.status(200).json({ status: 'Success', data: rows })
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      return res.status(500).json({ status: 'Error', message: e.message })
+    }
+  }
 }
-  

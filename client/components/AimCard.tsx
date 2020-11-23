@@ -57,7 +57,7 @@ const AimCard: React.FunctionComponent<AimCardProps> = ({ aim: initialAim }) => 
 
     setStatus(STATUS.LOADING)
     try {
-      const res = await editAim(formValues.name, aim.id)
+      const res = await editAim(formValues.name, '', aim.id)
       if (res.status === 'Success') {
         setStatus(STATUS.SUCCESS)
         setAim({

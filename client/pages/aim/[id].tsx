@@ -1,4 +1,4 @@
-import { GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import React, { FunctionComponent } from 'react'
 import styled from 'styled-components'
@@ -6,10 +6,9 @@ import AimCard from '../../components/AimCard'
 import AuthGuard from '../../components/AuthGuard'
 import DotCalendar from '../../components/DotCalendar'
 import Layout from '../../components/Layout'
-import { getAim } from '../../services/AimService'
 
 type AimDetailProps = {
-  aim: any[]
+  aim: object
   errorMessage: string
 }
 
@@ -45,12 +44,30 @@ const AimDetail: FunctionComponent<AimDetailProps> = ({ aim, errorMessage }) => 
 
 export default AimDetail
 
-export const getServerSideProps: GetStaticProps = async (context) => {
-  let { id } = context.params
-  let data = await getAim(id as string)
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  let aim = null
+  let errorMessage = ''
+  try {
+    const { id } = context.params
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL_SSR}/aims/${id}`, {
+      headers: context.req ? { cookie: context.req.headers.cookie } : undefined,
+      credentials: 'include',
+    })
+    const data = await res.json()
+
+    if (data.status === 'Success') {
+      aim = data.aim
+    } else {
+      throw new Error(data.message)
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      errorMessage = e.message
+    }
+  }
 
   return {
-    props: { aim: data.aim, errorMessage: data.message || '' },
+    props: { aim, errorMessage },
   }
 }
 
