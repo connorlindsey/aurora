@@ -13,6 +13,8 @@ import {
 import { getAccounts, getEarlyAccess } from './src/controllers/admin'
 import { getAllAims, getAims, getAim, createAim, deleteAim, editAim } from './src/controllers/aim'
 import cookieParser from 'cookie-parser'
+import {sendMessage,testSMS}  from './src/services/twilio'
+import { send } from 'process'
 
 const PORT = process.env.PORT || 8000
 const isProduction = process.env.NODE_ENV === 'production'
@@ -47,7 +49,7 @@ const addEarlyAccess = (req, res) => {
 }
 
 // Check authentication for all requests
-app.all('*', (req, res, next) => authenticateRequest(req, res, next))
+// app.all('*', (req, res, next) => authenticateRequest(req, res, next))
 
 // Early Access
 app.route('/earlyaccess').get(getEarlyAccess).post(addEarlyAccess)
@@ -69,9 +71,13 @@ app.route('/aims/').get(getAims)
 app.route('/aims/:aim_id').get(getAim)
 app.route('/aim').post(createAim).put(editAim).delete(deleteAim)
 
+app.route('/sms').get(testSMS)
+
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`)
 })
+
+
 
 process.on('uncaughtException', function (error) {
   console.log(error.stack)
