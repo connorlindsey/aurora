@@ -13,7 +13,7 @@ import {
 import { getAccounts, getEarlyAccess } from './src/controllers/admin'
 import { getAllAims, getAims, getAim, createAim, deleteAim, editAim } from './src/controllers/aim'
 import cookieParser from 'cookie-parser'
-import {sendMessage,testSMS}  from './src/services/twilio'
+import { recieveMessage, sendMessage, testSMS }  from './src/services/twilio'
 import { send } from 'process'
 
 const PORT = process.env.PORT || 8000
@@ -71,7 +71,7 @@ app.route('/aims/').get(getAims)
 app.route('/aims/:aim_id').get(getAim)
 app.route('/aim').post(createAim).put(editAim).delete(deleteAim)
 
-app.route('/sms').get(testSMS)
+app.route('/sms').get(testSMS).post(recieveMessage)
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`)
