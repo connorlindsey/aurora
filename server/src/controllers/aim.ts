@@ -56,9 +56,8 @@ export const getAim = async (req: Request, res: Response) => {
 export const deleteAim = async (req: Request, res: Response) => {
   try {
     const { aim_id } = req.body
-    const { rows } = await pool.query(`
-	 	  DELETE FROM aim WHERE id = '${aim_id}';
-	  `)
+    await pool.query(`DELETE FROM aim_entry WHERE aim_id = $1`, [aim_id])
+    await pool.query(`DELETE FROM aim WHERE id = '${aim_id}'`)
     return res.status(200).json({ status: 'Success' })
   } catch (e) {
     if (e instanceof Error) {
@@ -106,6 +105,66 @@ export const editAim = async (req: Request, res: Response) => {
       [name, description, aim_id]
     )
     return res.status(200).json({ status: 'Success', data: rows })
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      return res.status(500).json({ status: 'Error', message: e.message })
+    }
+  }
+}
+
+export const getCompletion = async (req: Request, res: Response) => {
+  try {
+    const { isAuthenticated } = res.locals.authStatus
+    if (!isAuthenticated) throw new Error('Unauthenticated request')
+
+    let aim_id = req.params.aim_id
+    let date = req.query.date
+    // console.log('\ndate', date)
+    // TODO: Filter by date
+    const { rows } = await pool.query(
+      `
+      SELECT * FROM aim_entry
+      WHERE aim_id = $1
+    `,
+      [aim_id]
+    )
+
+    return res.status(200).json({ status: 'Success', completionData: rows })
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      return res.status(500).json({ status: 'Error', message: e.message })
+    }
+  }
+}
+
+export const addCompletion = async (req: Request, res: Response) => {
+  try {
+    const { isAuthenticated } = res.locals.authStatus
+    if (!isAuthenticated) throw new Error('Unauthenticated request')
+
+    let aim_id = req.params['aim_id']
+    await pool.query(`INSERT INTO aim_entry (aim_id) VALUES ($1)`, [aim_id])
+    await pool.query(`UPDATE aim SET last_completed = CURRENT_DATE WHERE id = $1`, [aim_id])
+    return res.status(200).json({ status: 'Success' })
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      return res.status(500).json({ status: 'Error', message: e.message })
+    }
+  }
+}
+
+export const removeCompletion = async (req: Request, res: Response) => {
+  try {
+    const { isAuthenticated } = res.locals.authStatus
+    if (!isAuthenticated) throw new Error('Unauthenticated request')
+
+    let aim_id = req.params['aim_id']
+    await pool.query(`DELETE FROM aim_entry where aim_id = $1 and date = CURRENT_DATE`, [aim_id])
+    await pool.query(`UPDATE aim SET last_completed = NULL WHERE id = $1`, [aim_id])
+    return res.status(200).json({ status: 'Success' })
   } catch (e) {
     if (e instanceof Error) {
       console.error(e.message)

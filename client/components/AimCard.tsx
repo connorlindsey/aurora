@@ -1,9 +1,10 @@
+import moment from 'moment'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { FiMoreVertical } from 'react-icons/fi'
 import styled from 'styled-components'
-import { deleteAim, editAim } from '../services/AimService'
+import { addCompletion, deleteAim, editAim, removeCompletion } from '../services/AimService'
 import { STATUS } from '../types/common'
 import { Button } from './Button'
 import { Form, Input } from './Form'
@@ -77,10 +78,29 @@ const AimCard: React.FunctionComponent<AimCardProps> = ({ aim: initialAim }) => 
     }
   }
 
-  // TODO: Finish completion code
-  const [isComplete, setIsComplete] = useState(false)
-  const toggleCompletion = () => {
-    setIsComplete(!isComplete)
+  const [isComplete, setIsComplete] = useState(moment().isSame(aim.last_completed, 'day'))
+  const toggleCompletion = async () => {
+    try {
+      let res
+      if (!isComplete) {
+        res = await addCompletion(aim.id)
+      } else {
+        res = await removeCompletion(aim.id)
+      }
+
+      if (res.status === 'Success') {
+        if (router.pathname.includes('aim')) {
+          router.replace(`/aim/${aim.id}`)
+        }
+        setIsComplete(!isComplete)
+      } else {
+        throw new Error(res.message)
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        console.error(e.message)
+      }
+    }
   }
 
   return (
