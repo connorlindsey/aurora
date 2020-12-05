@@ -11,7 +11,17 @@ import {
   authenticateRequest,
 } from './src/controllers/account'
 import { getAccounts, getEarlyAccess } from './src/controllers/admin'
-import { getAllAims, getAims, getAim, createAim, deleteAim, editAim } from './src/controllers/aim'
+import {
+  getAllAims,
+  getAims,
+  getAim,
+  createAim,
+  deleteAim,
+  editAim,
+  addCompletion,
+  removeCompletion,
+  getCompletion,
+} from './src/controllers/aim'
 import cookieParser from 'cookie-parser'
 
 const PORT = process.env.PORT || 8000
@@ -33,10 +43,7 @@ app.get('/', (req, res) => res.send('twelvemonth API'))
 
 // Early Access
 const addEarlyAccess = (req, res) => {
-  console.info('Add early access')
   const { email, name } = req.body
-  console.log('email', email)
-  console.log('name', name)
   pool.query('INSERT INTO earlyaccess (email, name) VALUES ($1, $2)', [email, name], (error) => {
     if (error) {
       console.error(error.message)
@@ -68,6 +75,7 @@ app.route('/admin/aims').get(getAllAims)
 app.route('/aims/').get(getAims)
 app.route('/aims/:aim_id').get(getAim)
 app.route('/aim').post(createAim).put(editAim).delete(deleteAim)
+app.route('/aim/:aim_id/completion').get(getCompletion).post(addCompletion).delete(removeCompletion)
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`)

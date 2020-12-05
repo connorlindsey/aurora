@@ -62,3 +62,45 @@ export const deleteAim = async (id: string) => {
     return { status: 'Error', message: e.message }
   }
 }
+
+export const addCompletion = async (aim_id: string) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/aim/${aim_id}/completion`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+    const data = await res.json()
+
+    if (data.status === 'Success') {
+      return data
+    } else {
+      throw new Error(data.message)
+    }
+  } catch (e) {
+    return { status: 'Error', message: e.message }
+  }
+}
+
+export const removeCompletion = async (aim_id: string) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/aim/${aim_id}/completion`, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+    const data = await res.json()
+
+    if (data.status === 'Success') {
+      return data
+    } else {
+      throw new Error(data.message)
+    }
+  } catch (e) {
+    return { status: 'Error', message: e.message }
+  }
+}

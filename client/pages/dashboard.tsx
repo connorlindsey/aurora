@@ -43,7 +43,7 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims: initialAims, error
       if (res.status === 'Success') {
         setStatus(STATUS.SUCCESS)
         setIsModalOpen(false)
-        setAims([...aims, ...res.data])
+        setAims([...res.data, ...aims])
       } else {
         throw new Error(res.message)
       }
@@ -59,10 +59,12 @@ const Dashboard: FunctionComponent<DashboardProps> = ({ aims: initialAims, error
   if (errorMessage) {
     return (
       <Layout>
-        <Container>
-          <h1>Error</h1>
-          <p>{errorMessage}</p>
-        </Container>
+        <AuthGuard>
+          <Container>
+            <h1>Error</h1>
+            <p>{errorMessage}</p>
+          </Container>
+        </AuthGuard>
       </Layout>
     )
   }
